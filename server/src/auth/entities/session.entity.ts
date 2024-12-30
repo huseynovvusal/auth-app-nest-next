@@ -1,10 +1,16 @@
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Session {
-  @ManyToMany(() => User)
-  user: number;
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => User, (user) => user.sessions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  user: User;
 
   @Column({
     type: 'varchar',

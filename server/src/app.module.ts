@@ -10,7 +10,6 @@ import dbConfig from './config/db.config';
 import environmentValidation from './config/environment.validation';
 
 const ENV = process.env.NODE_ENV;
-console.log(!ENV ? '.env' : `.env.${ENV}.local`);
 
 @Module({
   imports: [
@@ -25,13 +24,14 @@ console.log(!ENV ? '.env' : `.env.${ENV}.local`);
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        autoLoadEntities: configService.get('db.autoLoadEntities'),
+        // autoLoadEntities: configService.get('db.autoLoadEntities'),
         synchronize: configService.get('db.synchronize'),
         host: configService.get('db.host'),
         port: +configService.get('db.port'),
         username: configService.get('db.username'),
         password: configService.get('db.password'),
         database: configService.get('db.database'),
+        entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
       }),
     }),
     UsersModule,
