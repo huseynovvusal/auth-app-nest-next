@@ -65,5 +65,6 @@ export class User {
   updatedAt: Date;
 
   @OneToMany(() => Session, (session) => session.user)
+  @Exclude()
   sessions: Session[];
 }

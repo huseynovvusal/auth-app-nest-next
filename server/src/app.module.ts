@@ -9,13 +9,13 @@ import appConfig from './config/app.config';
 import dbConfig from './config/db.config';
 import environmentValidation from './config/environment.validation';
 
-const ENV = process.env.NODE_ENV;
+const NODE_ENV = process.env.NODE_ENV;
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ENV ? `.env.${ENV}.local` : '.env',
+      envFilePath: NODE_ENV ? `.env.${NODE_ENV}.local` : '.env',
       load: [appConfig, dbConfig],
       validationSchema: environmentValidation,
     }),
