@@ -14,6 +14,7 @@ import { HashingProvider } from 'src/auth/providers/hashing.provider';
 import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { Response } from 'express';
+import { CreateUserProvider } from './providers/create-user.provider';
 
 /*
  * Users Service
@@ -26,21 +27,7 @@ export class UsersService {
     /*
      * Inject the User Repository
      */
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    /*
-     * Inject the Hashing Provider
-     */
-    @Inject(forwardRef(() => HashingProvider))
-    private readonly hashingProvider: HashingProvider,
-    /*
-     * Inject the Session Provider
-     */
-    private readonly sessionProvider: SessionProvider,
-    /*
-     * Inject the Generate Tokens Provider
-     */
-    private readonly generateTokensProvider: GenerateTokensProvider,
+    private readonly createUserProvider: CreateUserProvider,
   ) {}
 
   /*
@@ -51,54 +38,12 @@ export class UsersService {
     userAgent: string,
     ip: string,
     response: Response,
-  ): Promise<any> {
-    let existingUser = undefined;
-
-    try {
-      existingUser = await this.userRepository.findOne({
-        where: {
-          email: createUserDto.email,
-        },
-      });
-    } catch (error) {
-      throw new RequestTimeoutException(error);
-    }
-
-    //? Check if user already exists
-    if (existingUser) {
-      throw new BadRequestException(
-        'User already exists, please check your email.',
-      );
-    }
-
-    //? Create a new user
-    let newUser = this.userRepository.create({
-      ...createUserDto,
-      password: await this.hashingProvider.hashPassword(createUserDto.password),
-    });
-
-    try {
-      newUser = await this.userRepository.save(newUser);
-
-      //? Create a new session
-      // const session =
-      await this.sessionProvider.create({
-        userAgent,
-        ip,
-        user: newUser,
-      });
-    } catch (error) {
-      throw new RequestTimeoutException(error);
-    }
-
-    //? Sign Access Token & Refresh Token (Set Cookies)
-    // const { accessToken, refreshToken } =
-    await this.generateTokensProvider.generateTokens(newUser, response);
-
-    //? Log the new user
-    this.logger.log(`New user was created via email: ${newUser.email}`);
-
-    //? Return the new user
-    return newUser;
+  ) {
+    return this.createUserProvider.create(
+      createUserDto,
+      userAgent,
+      ip,
+      response,
+    );
   }
 }
