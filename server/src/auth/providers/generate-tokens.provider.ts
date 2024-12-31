@@ -7,21 +7,28 @@ import { IActiveUser } from '../interfaces/active-user.interface';
 import { Response } from 'express';
 
 const NODE_ENV = process.env.NODE_ENV;
+const IS_PRODUCTION = NODE_ENV === 'production';
 
 @Injectable()
 export class GenerateTokensProvider {
+  private readonly _defaultCookieOptions = {
+    httpOnly: true,
+    sameSite: 'strict' as const,
+    secure: IS_PRODUCTION,
+  };
+
   constructor(
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  public async signToken<T>(
+  public async signToken<T extends object>(
     userId: number,
     expiresIn: number | string,
     payload?: T,
-  ) {
-    return await this.jwtService.signAsync(
+  ): Promise<string> {
+    return this.jwtService.signAsync(
       {
         sub: userId,
         ...payload,
@@ -47,23 +54,24 @@ export class GenerateTokensProvider {
           email: user.email,
         },
       ),
-
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
     ]);
 
-    //? Set HttpOnly Cookies
+    const accessTokenExpiry = new Date(
+      Date.now() + this.jwtConfiguration.accessTokenTtl * 1000,
+    );
+    const refreshTokenExpiry = new Date(
+      Date.now() + this.jwtConfiguration.refreshTokenTtl * 1000,
+    );
+
     response
       .cookie('accessToken', accessToken, {
-        httpOnly: true,
-        sameSite: 'strict',
-        secure: NODE_ENV === 'production',
-        expires: new Date(Date.now() + this.jwtConfiguration.accessTokenTtl),
+        ...this._defaultCookieOptions,
+        expires: accessTokenExpiry,
       })
       .cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        sameSite: 'strict',
-        secure: NODE_ENV === 'production',
-        expires: new Date(Date.now() + this.jwtConfiguration.refreshTokenTtl),
+        ...this._defaultCookieOptions,
+        expires: refreshTokenExpiry,
         path: '/auth/refresh',
       });
 

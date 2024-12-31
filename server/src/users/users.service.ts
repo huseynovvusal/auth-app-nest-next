@@ -17,14 +17,29 @@ import { Response } from 'express';
 @Injectable()
 export class UsersService {
   constructor(
+    /*
+     * Inject the User Repository
+     */
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    /*
+     * Inject the Hashing Provider
+     */
     @Inject(forwardRef(() => HashingProvider))
     private readonly hashingProvider: HashingProvider,
+    /*
+     * Inject the Session Provider
+     */
     private readonly sessionProvider: SessionProvider,
+    /*
+     * Inject the Generate Tokens Provider
+     */
     private readonly generateTokensProvider: GenerateTokensProvider,
   ) {}
 
+  /*
+   * Create a new user
+   */
   public async create(
     createUserDto: CreateUserDto,
     userAgent: string,
@@ -72,12 +87,10 @@ export class UsersService {
       throw new RequestTimeoutException(error);
     }
 
-    // Sign Access Token & Refresh Token
-    const { accessToken, refreshToken } =
-      await this.generateTokensProvider.generateTokens(newUser, response);
+    //? Sign Access Token & Refresh Token (Set Cookies)
+    // const { accessToken, refreshToken } =
+    await this.generateTokensProvider.generateTokens(newUser, response);
 
-    return {
-      user: newUser,
-    };
+    return newUser;
   }
 }
