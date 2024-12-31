@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
   RequestTimeoutException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -14,8 +15,13 @@ import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { Response } from 'express';
 
+/*
+ * Users Service
+ */
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     /*
      * Inject the User Repository
@@ -75,14 +81,12 @@ export class UsersService {
       newUser = await this.userRepository.save(newUser);
 
       //? Create a new session
-      const session = await this.sessionProvider.create({
+      // const session =
+      await this.sessionProvider.create({
         userAgent,
         ip,
         user: newUser,
       });
-
-      // !
-      console.log(session);
     } catch (error) {
       throw new RequestTimeoutException(error);
     }
@@ -91,6 +95,10 @@ export class UsersService {
     // const { accessToken, refreshToken } =
     await this.generateTokensProvider.generateTokens(newUser, response);
 
+    //? Log the new user
+    this.logger.log(`New user was created via email: ${newUser.email}`);
+
+    //? Return the new user
     return newUser;
   }
 }

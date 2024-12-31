@@ -10,8 +10,14 @@ import jwtConfig from '../config/jwt.config';
 @Injectable()
 export class SessionProvider {
   constructor(
+    /*
+     * Inject the repository for the Session entity
+     */
     @InjectRepository(Session)
     private readonly sessionRepository: Repository<Session>,
+    /*
+     * Inject the JWT configuration
+     */
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}

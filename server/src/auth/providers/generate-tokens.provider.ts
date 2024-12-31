@@ -9,6 +9,9 @@ import { Response } from 'express';
 const NODE_ENV = process.env.NODE_ENV;
 const IS_PRODUCTION = NODE_ENV === 'production';
 
+/*
+ * Generate Tokens Provider
+ */
 @Injectable()
 export class GenerateTokensProvider {
   private readonly _defaultCookieOptions = {
@@ -18,8 +21,14 @@ export class GenerateTokensProvider {
   };
 
   constructor(
+    /*
+     * Inject the JWT configuration
+     */
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    /*
+     * Inject the JWT service
+     */
     private readonly jwtService: JwtService,
   ) {}
 
