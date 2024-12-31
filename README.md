@@ -11,8 +11,13 @@ This project is an authentication application that includes features such as log
 
 ## Technologies Used 🛠️
 
-- **Backend**: Nest.js
-- **Frontend**: Next.js
+- **Backend Framework**: Nest.js
+- **Frontend Framework**: Next.js
+- **Database**: PostgreSQL
+- **ORM**: TypeORM
+- **Authentication**: JWT (JSON Web Tokens)
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
 
 ## Installation 📥
 
