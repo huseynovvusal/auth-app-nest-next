@@ -15,7 +15,6 @@ import { GenerateTokensProvider } from './providers/generate-tokens.provider';
 import { SignInProvider } from './providers/sign-in.provider';
 import { User } from 'src/users/entities/user.entity';
 import { GoogleAuthenticationController } from './social/google-authentication.controller';
-import { Service } from './social/.service';
 import { GoogleAuthenticationService } from './social/google-authentication.service';
 
 @Module({
@@ -35,7 +34,6 @@ import { GoogleAuthenticationService } from './social/google-authentication.serv
     SessionProvider,
     GenerateTokensProvider,
     SignInProvider,
-    Service,
     GoogleAuthenticationService,
   ],
   controllers: [AuthController, GoogleAuthenticationController],
