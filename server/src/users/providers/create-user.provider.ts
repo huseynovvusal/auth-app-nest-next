@@ -14,6 +14,7 @@ import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { Response } from 'express';
+import { AUTH_ERROR_MESSAGES } from 'src/constants/error.contants';
 
 /*
  * Create User Provider
@@ -85,7 +86,10 @@ export class CreateUserProvider {
         user: newUser,
       });
     } catch (error) {
-      throw new RequestTimeoutException(error);
+      this.logger.error(error);
+      throw new RequestTimeoutException(
+        AUTH_ERROR_MESSAGES.ERROR_CREATING_USER,
+      );
     }
 
     //? Sign Access Token & Refresh Token (Set Cookies)

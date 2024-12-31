@@ -15,6 +15,9 @@ import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { Response } from 'express';
 import { CreateUserProvider } from './providers/create-user.provider';
+import { FindOneByGoogleIdProvider } from './providers/find-one-by-google-id.provider';
+import { CreateGoogleUserProvider } from './providers/create-google-user.provider';
+import { GoogleUser } from './interfaces/google-user.interface';
 
 /*
  * Users Service
@@ -25,9 +28,17 @@ export class UsersService {
 
   constructor(
     /*
-     * Inject the User Repository
+     * Inject User Repository
      */
     private readonly createUserProvider: CreateUserProvider,
+    /*
+     * Inject Find One By Google Id Provider
+     */
+    private readonly findOneByGoogleIdProvider: FindOneByGoogleIdProvider,
+    /*
+     * Inject Create Google User Provider
+     */
+    private readonly createGoogleUserProvider: CreateGoogleUserProvider,
   ) {}
 
   /*
@@ -39,11 +50,19 @@ export class UsersService {
     ip: string,
     response: Response,
   ) {
-    return this.createUserProvider.create(
+    return await this.createUserProvider.create(
       createUserDto,
       userAgent,
       ip,
       response,
     );
+  }
+
+  public async findOneByGoogleId(googleId: string) {
+    return await this.findOneByGoogleIdProvider.findOneByGoogleId(googleId);
+  }
+
+  public async createGoogleUser(googleUser: GoogleUser) {
+    return await this.createGoogleUserProvider.createGoogleUser(googleUser);
   }
 }

@@ -12,4 +12,6 @@ export default Joi.object({
   DB_DATABASE: Joi.string().required(),
   DB_AUTO_LOAD_ENTITIES: Joi.boolean().required(),
   DB_SYNC: Joi.boolean().required(),
+  GOOGLE_CLIENT_ID: Joi.string().required(),
+  GOOGLE_CLIENT_SECRET: Joi.string().required(),
 });
