@@ -4,7 +4,8 @@ export default Joi.object({
   NODE_ENV: Joi.string()
     .valid('development', 'production', 'test', 'stagging')
     .required(),
-  DB_PORT: Joi.number().required().default(5432),
+  API_VERSION: Joi.string().default('1.0.0'),
+  DB_PORT: Joi.number().default(5432),
   DB_HOST: Joi.string().required(),
   DB_USER: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
