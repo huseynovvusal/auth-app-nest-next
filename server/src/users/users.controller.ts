@@ -1,4 +1,13 @@
-import { Body, Controller, Ip, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Ip,
+  Post,
+  Req,
+  Res,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
@@ -8,6 +17,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('create')
+  @UseInterceptors(ClassSerializerInterceptor)
   public async create(
     @Body() createUserDto: CreateUserDto,
     @Req() request: Request,
