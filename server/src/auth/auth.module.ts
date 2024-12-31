@@ -12,6 +12,8 @@ import { ConfigModule } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { GenerateTokensProvider } from './providers/generate-tokens.provider';
+import { SignInProvider } from './providers/sign-in.provider';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { GenerateTokensProvider } from './providers/generate-tokens.provider';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     forwardRef(() => UsersModule),
     TypeOrmModule,
-    TypeOrmModule.forFeature([Session, VerificationCode]),
+    TypeOrmModule.forFeature([Session, VerificationCode, User]),
   ],
   providers: [
     AuthService,
@@ -29,6 +31,7 @@ import { GenerateTokensProvider } from './providers/generate-tokens.provider';
     },
     SessionProvider,
     GenerateTokensProvider,
+    SignInProvider,
   ],
   controllers: [AuthController],
   exports: [
