@@ -24,8 +24,6 @@ import { GoogleUser } from './interfaces/google-user.interface';
  */
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
-
   constructor(
     /*
      * Inject User Repository
@@ -58,10 +56,16 @@ export class UsersService {
     );
   }
 
+  /*
+   * Find one user by google id
+   */
   public async findOneByGoogleId(googleId: string) {
     return await this.findOneByGoogleIdProvider.findOneByGoogleId(googleId);
   }
 
+  /*
+   * Create a new google user
+   */
   public async createGoogleUser(googleUser: GoogleUser) {
     return await this.createGoogleUserProvider.createGoogleUser(googleUser);
   }
