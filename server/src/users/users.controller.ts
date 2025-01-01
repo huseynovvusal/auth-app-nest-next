@@ -16,6 +16,9 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
 import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { AuthType } from 'src/auth/enums/auth-type.enum';
+import { RequestUser } from 'src/auth/types/requestUser.type';
 
 /*
  * Users Controller
@@ -28,6 +31,7 @@ export class UsersController {
    * Create a new user
    */
   @Post('create')
+  @Auth(AuthType.None)
   @UseInterceptors(ClassSerializerInterceptor)
   public async create(
     @Body() createUserDto: CreateUserDto,
@@ -43,12 +47,12 @@ export class UsersController {
   /*
    * Get User Info //!(Route Check)
    */
-  @UseGuards(AccessTokenGuard)
-  @Get(':id')
-  public async getUserInfo(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<any> {
+  // @Auth(AuthType.Cookie)
+  @Get('info')
+  public async getUserInfo(@Req() request: RequestUser): Promise<any> {
     // !
-    console.log('User ID:', id);
+    // console.log('User ID:', request.user?.id);
+
+    return { user: request.user };
   }
 }
