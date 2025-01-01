@@ -5,7 +5,7 @@ import jwtConfig from '../config/jwt.config';
 import { User } from 'src/users/entities/user.entity';
 import { IActiveUser } from '../interfaces/active-user.interface';
 import { Response } from 'express';
-import { COOKIE_KEYS } from 'src/common/constants/cookie.constants';
+import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 
 const NODE_ENV = process.env.NODE_ENV;
 const IS_PRODUCTION = NODE_ENV === 'production';

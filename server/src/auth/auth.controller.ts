@@ -32,7 +32,7 @@ export class AuthController {
    * Sign In
    */
   @Post('sign-in')
-  @Auth(AuthType.None)
+  @Auth(AuthType.NoCookie)
   @HttpCode(HttpStatus.OK)
   public async signIn(
     @Body() signInDto: SignInDto,

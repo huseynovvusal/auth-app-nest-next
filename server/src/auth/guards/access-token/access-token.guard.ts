@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 import jwtConfig from 'src/auth/config/jwt.config';
 import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
 import { AccessToken } from 'src/auth/interfaces/accessToken.interface';
-import { COOKIE_KEYS } from 'src/common/constants/cookie.constants';
+import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -37,7 +37,12 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     //? Extract Access Token
-    const accessToken = request.cookies[COOKIE_KEYS.ACCESS_TOKEN];
+    const accessToken = request.cookies?.[COOKIE_KEYS.ACCESS_TOKEN];
+
+    //? Check Access Token
+    if (!accessToken) {
+      throw new UnauthorizedException();
+    }
 
     //? Verify Access Token
     try {

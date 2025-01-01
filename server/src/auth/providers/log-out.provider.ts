@@ -1,6 +1,6 @@
 import { Injectable, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { COOKIE_KEYS } from 'src/common/constants/cookie.constants';
+import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { RequestUser } from '../types/requestUser.type';
 import { AccessTokenGuard } from '../guards/access-token/access-token.guard';
 

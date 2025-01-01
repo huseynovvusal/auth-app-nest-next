@@ -19,6 +19,7 @@ import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guar
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 import { RequestUser } from 'src/auth/types/requestUser.type';
+import { User } from './entities/user.entity';
 
 /*
  * Users Controller
@@ -31,14 +32,15 @@ export class UsersController {
    * Create a new user
    */
   @Post('create')
-  @Auth(AuthType.None)
+  // Restrict access to this route to logged-in users
+  @Auth(AuthType.NoCookie)
   @UseInterceptors(ClassSerializerInterceptor)
   public async create(
     @Body() createUserDto: CreateUserDto,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
     @Ip() ip: string,
-  ): Promise<any> {
+  ): Promise<User> {
     const userAgent = request.headers['user-agent'];
 
     return this.usersService.create(createUserDto, userAgent, ip, response);
@@ -47,12 +49,9 @@ export class UsersController {
   /*
    * Get User Info //!(Route Check)
    */
-  // @Auth(AuthType.Cookie)
   @Get('info')
-  public async getUserInfo(@Req() request: RequestUser): Promise<any> {
-    // !
-    // console.log('User ID:', request.user?.id);
-
-    return { user: request.user };
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async getUserInfo(@Req() request: RequestUser): Promise<User> {
+    return request.user;
   }
 }

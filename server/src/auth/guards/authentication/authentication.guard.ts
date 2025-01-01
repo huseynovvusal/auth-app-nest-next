@@ -1,14 +1,15 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { AccessTokenGuard } from '../access-token/access-token.guard';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 import { AUTH_TYPE_KEY } from 'src/auth/constants/auth.constants';
+import { NonAcessTokenGuardGuard } from '../access-token/non-acess-token.guard.guard';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -19,6 +20,7 @@ export class AuthenticationGuard implements CanActivate {
     CanActivate | CanActivate[]
   > = {
     [AuthType.Cookie]: this.accessTokenGuard,
+    [AuthType.NoCookie]: this.nonAccessTokenGuard,
     [AuthType.None]: { canActivate: () => true },
   };
 
@@ -31,6 +33,10 @@ export class AuthenticationGuard implements CanActivate {
      * Inject AccessTokenGuard
      */
     private readonly accessTokenGuard: AccessTokenGuard,
+    /*
+     * Inject NonAccessTokenGuard
+     */
+    private readonly nonAccessTokenGuard: NonAcessTokenGuardGuard,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -51,7 +57,7 @@ export class AuthenticationGuard implements CanActivate {
     // !
     // console.log('Guards:', guards);
 
-    const error = new UnauthorizedException();
+    const error = new ForbiddenException();
 
     for (const instance of guards) {
       const canActivate = await Promise.resolve(

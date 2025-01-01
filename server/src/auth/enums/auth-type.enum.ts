@@ -1,5 +1,5 @@
 export enum AuthType {
   None = 'none',
-  Cookie = 'cookie',
-  //   Bearer = 'bearer',
+  Cookie = 'cookie', //? JWT Cookie
+  NoCookie = 'no-cookie',
 }
