@@ -4,18 +4,14 @@ import {
   Controller,
   Get,
   Ip,
-  Param,
-  ParseIntPipe,
   Post,
   Req,
   Res,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
-import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 import { RequestUser } from 'src/auth/types/requestUser.type';
@@ -47,11 +43,10 @@ export class UsersController {
   }
 
   /*
-   * Get User Info //!(Route Check)
+   * Get User Info ////(Route Check)
    */
   @Get('info')
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async getUserInfo(@Req() request: RequestUser): Promise<User> {
+  public async getUserInfo(@Req() request: RequestUser): Promise<any> {
     return request.user;
   }
 }

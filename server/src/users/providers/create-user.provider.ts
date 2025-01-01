@@ -79,25 +79,28 @@ export class CreateUserProvider {
       newUser = await this.userRepository.save(newUser);
 
       //? Create a new session
-      // const session =
-      await this.sessionProvider.create({
+      const session = await this.sessionProvider.create({
         userAgent,
         ip,
         user: newUser,
       });
+
+      //? Sign Access Token & Refresh Token (Set Cookies)
+      // const { accessToken, refreshToken } =
+      await this.generateTokensProvider.generateTokens(
+        newUser,
+        session.id,
+        response,
+      );
+
+      //? Log the new user
+      this.logger.log(`New user was created via email: ${newUser.email}`);
     } catch (error) {
       this.logger.error(error);
       throw new RequestTimeoutException(
         AUTH_ERROR_MESSAGES.ERROR_CREATING_USER,
       );
     }
-
-    //? Sign Access Token & Refresh Token (Set Cookies)
-    // const { accessToken, refreshToken } =
-    await this.generateTokensProvider.generateTokens(newUser, response);
-
-    //? Log the new user
-    this.logger.log(`New user was created via email: ${newUser.email}`);
 
     //? Return the new user
     return newUser;

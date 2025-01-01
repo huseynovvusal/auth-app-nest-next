@@ -77,7 +77,7 @@ export class SignInProvider {
     }
 
     //? Create a new session
-    const session = this.sessionProvider.create({
+    const session = await this.sessionProvider.create({
       user,
       userAgent,
       ip,
@@ -85,7 +85,11 @@ export class SignInProvider {
 
     //? Sign Access Token & Refresh Token (Set Cookies)
     // const { accessToken, refreshToken } =
-    await this.generateTokensProvider.generateTokens(user, response);
+    await this.generateTokensProvider.generateTokens(
+      user,
+      session.id,
+      response,
+    );
 
     return user;
   }

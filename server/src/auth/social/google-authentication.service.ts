@@ -13,6 +13,7 @@ import { GoogleTokenDto } from './dtos/google-token.dto';
 import { UsersService } from 'src/users/users.service';
 import { GenerateTokensProvider } from '../providers/generate-tokens.provider';
 import { Response } from 'express';
+import { SessionProvider } from '../providers/session.provider';
 
 /*
  * Google Authentication Service
@@ -24,19 +25,23 @@ export class GoogleAuthenticationService implements OnModuleInit {
 
   constructor(
     /*
-     * Inject Users Service
+     * Inject UsersService
      */
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     /*
-     * Inject JWT Configuration
+     * Inject JwtConfiguration
      */
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     /*
-     * Inject Generate Tokens Provider
+     * Inject GenerateTokensProvider
      */
     private readonly generateTokensProvider: GenerateTokensProvider,
+    /*
+     * Inject SessionProvider
+     */
+    private readonly sessionProvider: SessionProvider,
   ) {}
 
   onModuleInit() {
@@ -48,6 +53,8 @@ export class GoogleAuthenticationService implements OnModuleInit {
 
   public async authenticate(
     googleTokenDto: GoogleTokenDto,
+    userAgent: string,
+    ip: string,
     response: Response,
   ) {
     try {
@@ -70,9 +77,20 @@ export class GoogleAuthenticationService implements OnModuleInit {
       //? Find the user by Google ID
       const user = await this.usersService.findOneByGoogleId(googleId);
 
+      //?
+      const session = await this.sessionProvider.create({
+        user,
+        userAgent,
+        ip,
+      });
+
       //? If the user exists, generate tokens
       if (user) {
-        return await this.generateTokensProvider.generateTokens(user, response);
+        return await this.generateTokensProvider.generateTokens(
+          user,
+          session.id,
+          response,
+        );
       }
 
       //? If the user does not exist, create a new user
@@ -84,6 +102,13 @@ export class GoogleAuthenticationService implements OnModuleInit {
         googleId,
       });
 
+      //? Create a new session
+      const newSession = await this.sessionProvider.create({
+        user: newUser,
+        userAgent,
+        ip,
+      });
+
       //? Log the new user
       this.logger.log(
         'New Google user created via Google (OAuth):',
@@ -92,6 +117,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
 
       return await this.generateTokensProvider.generateTokens(
         newUser,
+        newSession.id,
         response,
       );
     } catch (error) {

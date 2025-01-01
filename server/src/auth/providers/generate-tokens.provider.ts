@@ -54,6 +54,7 @@ export class GenerateTokensProvider {
 
   public async generateTokens(
     user: User,
+    sessionId: number,
     response: Response,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const [accessToken, refreshToken] = await Promise.all([
@@ -62,6 +63,7 @@ export class GenerateTokensProvider {
         this.jwtConfiguration.accessTokenTtl,
         {
           email: user.email,
+          sessionId,
         },
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
@@ -84,7 +86,7 @@ export class GenerateTokensProvider {
       .cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
         ...this._defaultCookieOptions,
         expires: refreshTokenExpiry,
-        path: '/auth/refresh',
+        path: '/auth/refresh-token',
       });
 
     return { accessToken, refreshToken };

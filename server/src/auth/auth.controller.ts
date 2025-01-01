@@ -54,6 +54,6 @@ export class AuthController {
     @Req() request: RequestUser,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    this.authService.logOut(request, response);
+    await this.authService.logOut(request, response);
   }
 }

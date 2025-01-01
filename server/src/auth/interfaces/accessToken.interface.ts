@@ -1,4 +1,3 @@
-export interface AccessToken {
-  sub: number;
-  email: string;
-}
+import { IActiveUser } from './active-user.interface';
+
+export interface AccessToken extends IActiveUser {}

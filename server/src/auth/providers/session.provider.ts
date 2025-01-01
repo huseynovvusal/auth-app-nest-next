@@ -31,4 +31,8 @@ export class SessionProvider {
 
     return this.sessionRepository.save(session);
   }
+
+  public async delete(sessionId: number): Promise<void> {
+    await this.sessionRepository.delete(sessionId);
+  }
 }
