@@ -1,6 +1,6 @@
 # Auth App 🚀
 
-This project is an authentication application that includes features such as login/signup, forgot password, email verification, and session management. It uses Nest.js as the backend framework and Next.js as the frontend framework.
+This project is an authentication application that includes features such as login/signup, forgot password, email verification, session management, and Google OAuth authentication. It uses Nest.js as the backend framework and Next.js as the frontend framework.
 
 ## Features ✨
 
@@ -8,6 +8,7 @@ This project is an authentication application that includes features such as log
 - **Forgot Password**: Password recovery via email.
 - **Email Verification**: Verification of user email addresses.
 - **Session Management**: Handling user sessions securely.
+- **Google OAuth**: Authentication using Google accounts.
 
 ## Technologies Used 🛠️
 
@@ -15,7 +16,7 @@ This project is an authentication application that includes features such as log
 - **Frontend Framework**: Next.js
 - **Database**: PostgreSQL
 - **ORM**: TypeORM
-- **Authentication**: JWT (JSON Web Tokens)
+- **Authentication**: JWT (JSON Web Tokens), Google OAuth
 - **Styling**: Tailwind CSS
 - **State Management**: Zustand
 

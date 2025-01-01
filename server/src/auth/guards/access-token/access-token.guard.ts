@@ -48,7 +48,7 @@ export class AccessTokenGuard implements CanActivate {
 
       request[REQUEST_USER_KEY] = payload;
 
-      //! LOG
+      //!
       console.log('Access Token Guard -> User:', payload.email);
     } catch (error) {
       throw new UnauthorizedException();
