@@ -4,8 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { User } from 'src/users/entities/user.entity';
 import { IActiveUser } from '../interfaces/active-user.interface';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
+import { REFRESH_TOKEN_PATH } from '../constants/auth.constants';
 
 const NODE_ENV = process.env.NODE_ENV;
 const IS_PRODUCTION = NODE_ENV === 'production';
@@ -15,7 +16,7 @@ const IS_PRODUCTION = NODE_ENV === 'production';
  */
 @Injectable()
 export class GenerateTokensProvider {
-  private readonly _defaultCookieOptions = {
+  private readonly _defaultCookieOptions: CookieOptions = {
     httpOnly: true,
     sameSite: 'strict' as const,
     secure: IS_PRODUCTION,
@@ -86,7 +87,7 @@ export class GenerateTokensProvider {
       .cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
         ...this._defaultCookieOptions,
         expires: refreshTokenExpiry,
-        path: '/auth/refresh-token',
+        path: REFRESH_TOKEN_PATH,
       });
 
     return { accessToken, refreshToken };

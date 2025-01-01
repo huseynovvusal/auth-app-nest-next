@@ -3,30 +3,29 @@ import {
   Injectable,
   RequestTimeoutException,
 } from '@nestjs/common';
-import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
+import * as ERROR_MESSAGES from '../../common/constants/error.contants';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import * as ERROR_MESSAGES from '../../common/constants/error.contants';
-
 @Injectable()
-export class FindOneByEmailProvider {
+export class FindOneByIdProvider {
   constructor(
     /*
-     * Inject UserRepository
+     * Inject UsersRepository
      */
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  public async findOneByEmail(email: string): Promise<User> {
+  public async findById(id: number): Promise<User> {
     let user: User = undefined;
 
     try {
-      user = await this.userRepository.findOneBy({ email });
+      user = await this.usersRepository.findOneBy({ id });
     } catch (error) {
       throw new RequestTimeoutException(
-        ERROR_MESSAGES.UNABLE_TO_PROCESS_REQUEST,
+        'Unable to process your request at the moment, please try later.',
       );
     }
 

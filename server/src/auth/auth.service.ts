@@ -4,6 +4,7 @@ import { SignInDto } from './dtos/sign-in.dto';
 import { Response } from 'express';
 import { LogOutProvider } from './providers/log-out.provider';
 import { RequestUser } from './types/requestUser.type';
+import { RefreshTokensProvider } from './providers/refresh-tokens.provider';
 
 /*
  * Auth Service
@@ -19,6 +20,10 @@ export class AuthService {
      * Inject LogOutProvider
      */
     private readonly logOutProvider: LogOutProvider,
+    /*
+     * Inject RefreshTokensProvider
+     */
+    private readonly refreshTokensProvider: RefreshTokensProvider,
   ) {}
 
   /*
@@ -38,5 +43,12 @@ export class AuthService {
    */
   public async logOut(request: RequestUser, response: Response) {
     return await this.logOutProvider.logOut(request, response);
+  }
+
+  /*
+   * Refresh Tokens
+   */
+  public async refreshTokens(request: RequestUser, response: Response) {
+    return await this.refreshTokensProvider.refreshTokens(request, response);
   }
 }

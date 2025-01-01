@@ -77,7 +77,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
       //? Find the user by Google ID
       const user = await this.usersService.findOneByGoogleId(googleId);
 
-      //?
+      //? Create a new session
       const session = await this.sessionProvider.create({
         user,
         userAgent,

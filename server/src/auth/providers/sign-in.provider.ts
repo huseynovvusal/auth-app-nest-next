@@ -8,7 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HashingProvider } from './hashing.provider';
-import * as AUTH_ERROR_MESSAGES from '../../common/constants/error.contants';
+import * as ERROR_MESSAGES from '../../common/constants/error.contants';
 import { SessionProvider } from './session.provider';
 import { Response } from 'express';
 import { GenerateTokensProvider } from './generate-tokens.provider';
@@ -60,7 +60,7 @@ export class SignInProvider {
     //? Check if user exists
     if (!user) {
       throw new UnauthorizedException(
-        AUTH_ERROR_MESSAGES.EMAIL_OR_PASSWORD_NOT_CORRECT,
+        ERROR_MESSAGES.EMAIL_OR_PASSWORD_NOT_CORRECT,
       );
     }
 
@@ -72,7 +72,7 @@ export class SignInProvider {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(
-        AUTH_ERROR_MESSAGES.EMAIL_OR_PASSWORD_NOT_CORRECT,
+        ERROR_MESSAGES.EMAIL_OR_PASSWORD_NOT_CORRECT,
       );
     }
 

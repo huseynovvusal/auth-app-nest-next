@@ -53,7 +53,19 @@ export class AuthController {
   public async logOut(
     @Req() request: RequestUser,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<void> {
+  ) {
     await this.authService.logOut(request, response);
+  }
+
+  /*
+   * Refresh Token
+   */
+  @Get('refresh')
+  @Auth(AuthType.Cookie)
+  public async refreshToken(
+    @Req() request: RequestUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return await this.authService.refreshTokens(request, response);
   }
 }

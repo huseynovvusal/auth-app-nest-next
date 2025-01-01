@@ -14,7 +14,7 @@ import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { Response } from 'express';
-import * as AUTH_ERROR_MESSAGES from 'src/common/constants/error.contants';
+import * as ERROR_MESSAGES from 'src/common/constants/error.contants';
 
 /*
  * Create User Provider
@@ -97,9 +97,7 @@ export class CreateUserProvider {
       this.logger.log(`New user was created via email: ${newUser.email}`);
     } catch (error) {
       this.logger.error(error);
-      throw new RequestTimeoutException(
-        AUTH_ERROR_MESSAGES.ERROR_CREATING_USER,
-      );
+      throw new RequestTimeoutException(ERROR_MESSAGES.ERROR_CREATING_USER);
     }
 
     //? Return the new user

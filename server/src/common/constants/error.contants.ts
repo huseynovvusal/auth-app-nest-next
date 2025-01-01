@@ -6,3 +6,5 @@ export const ERROR_CREATING_USER =
   'An error occurred while creating the user account.';
 export const ALREADY_LOGGED_IN = 'You are already logged in.';
 export const NOT_LOGGED_IN = 'You are not logged in.';
+export const UNABLE_TO_PROCESS_REQUEST =
+  'Unable to process your request at the moment, please try later.';

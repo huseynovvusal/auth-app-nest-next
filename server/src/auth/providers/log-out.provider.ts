@@ -4,6 +4,7 @@ import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { RequestUser } from '../types/requestUser.type';
 import { AccessTokenGuard } from '../guards/access-token/access-token.guard';
 import { SessionProvider } from './session.provider';
+import { REFRESH_TOKEN_PATH } from '../constants/auth.constants';
 
 /*
  * Log Out Provider
@@ -37,7 +38,7 @@ export class LogOutProvider {
     response
       .clearCookie(COOKIE_KEYS.ACCESS_TOKEN)
       .clearCookie(COOKIE_KEYS.REFRESH_TOKEN, {
-        path: '/auth/refresh-token',
+        path: REFRESH_TOKEN_PATH,
       });
   }
 }
