@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { SignInProvider } from './providers/sign-in.provider';
 import { SignInDto } from './dtos/sign-in.dto';
 import { Response } from 'express';
+import { LogOutProvider } from './providers/log-out.provider';
+import { RequestUser } from './types/requestUser.type';
 
 /*
  * Auth Service
@@ -13,6 +15,10 @@ export class AuthService {
      * Inject SignInProvider
      */
     private readonly signInProvider: SignInProvider,
+    /*
+     * Inject LogOutProvider
+     */
+    private readonly logOutProvider: LogOutProvider,
   ) {}
 
   /*
@@ -25,5 +31,12 @@ export class AuthService {
     response: Response,
   ) {
     return this.signInProvider.signIn(signInDto, userAgent, ip, response);
+  }
+
+  /*
+   * Log Out
+   */
+  public async logOut(request: RequestUser, response: Response) {
+    return await this.logOutProvider.logOut(request, response);
   }
 }

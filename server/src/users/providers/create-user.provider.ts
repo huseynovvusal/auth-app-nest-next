@@ -14,7 +14,7 @@ import { SessionProvider } from 'src/auth/providers/session.provider';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { Response } from 'express';
-import { AUTH_ERROR_MESSAGES } from 'src/constants/error.contants';
+import { AUTH_ERROR_MESSAGES } from 'src/common/constants/error.contants';
 
 /*
  * Create User Provider

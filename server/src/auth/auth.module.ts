@@ -16,6 +16,7 @@ import { SignInProvider } from './providers/sign-in.provider';
 import { User } from 'src/users/entities/user.entity';
 import { GoogleAuthenticationController } from './social/google-authentication.controller';
 import { GoogleAuthenticationService } from './social/google-authentication.service';
+import { LogOutProvider } from './providers/log-out.provider';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { GoogleAuthenticationService } from './social/google-authentication.serv
     GenerateTokensProvider,
     SignInProvider,
     GoogleAuthenticationService,
+    LogOutProvider,
   ],
   controllers: [AuthController, GoogleAuthenticationController],
   exports: [

@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Req, Res, Ip } from '@nestjs/common';
+import { Controller, Post, Body, Req, Res, Ip, Get } from '@nestjs/common';
 import { SignInDto } from './dtos/sign-in.dto';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
+import { RequestUser } from './types/requestUser.type';
 
 /*
  * Auth Controller
@@ -28,5 +29,17 @@ export class AuthController {
     const userAgent = request.headers['user-agent'];
 
     return this.authService.signIn(signInDto, userAgent, ip, response);
+  }
+
+  /*
+   * Log Out
+   */
+  //TODO: Guards
+  @Get('log-out')
+  public async logOut(
+    @Req() request: RequestUser,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    this.authService.logOut(request, response);
   }
 }

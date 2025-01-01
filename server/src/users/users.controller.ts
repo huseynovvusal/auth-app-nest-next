@@ -2,15 +2,20 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
   Ip,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
   Res,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
+import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 
 /*
  * Users Controller
@@ -33,5 +38,17 @@ export class UsersController {
     const userAgent = request.headers['user-agent'];
 
     return this.usersService.create(createUserDto, userAgent, ip, response);
+  }
+
+  /*
+   * Get User Info //!(Route Check)
+   */
+  @UseGuards(AccessTokenGuard)
+  @Get(':id')
+  public async getUserInfo(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<any> {
+    // !
+    console.log('User ID:', id);
   }
 }

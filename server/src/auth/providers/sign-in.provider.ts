@@ -9,7 +9,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HashingProvider } from './hashing.provider';
-import { AUTH_ERROR_MESSAGES } from '../../constants/error.contants';
+import { AUTH_ERROR_MESSAGES } from '../../common/constants/error.contants';
 import { Session } from '../entities/session.entity';
 import { SessionProvider } from './session.provider';
 import { Response } from 'express';

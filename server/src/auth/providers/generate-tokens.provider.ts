@@ -5,6 +5,7 @@ import jwtConfig from '../config/jwt.config';
 import { User } from 'src/users/entities/user.entity';
 import { IActiveUser } from '../interfaces/active-user.interface';
 import { Response } from 'express';
+import { COOKIE_KEYS } from 'src/common/constants/cookie.constants';
 
 const NODE_ENV = process.env.NODE_ENV;
 const IS_PRODUCTION = NODE_ENV === 'production';
@@ -74,11 +75,13 @@ export class GenerateTokensProvider {
     );
 
     response
-      .cookie('accessToken', accessToken, {
+      //? Set the access token cookie
+      .cookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
         ...this._defaultCookieOptions,
         expires: accessTokenExpiry,
       })
-      .cookie('refreshToken', refreshToken, {
+      //? Set the refresh token cookie
+      .cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
         ...this._defaultCookieOptions,
         expires: refreshTokenExpiry,
         path: '/auth/refresh',
