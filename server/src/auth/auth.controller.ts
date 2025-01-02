@@ -8,6 +8,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { SignInDto } from './dtos/sign-in.dto';
 import { AuthService } from './auth.service';
@@ -27,13 +29,13 @@ export class AuthController {
      */
     private readonly authService: AuthService,
   ) {}
-
   /*
    * Sign In
    */
   @Post('sign-in')
   @Auth(AuthType.NoCookie)
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(ClassSerializerInterceptor)
   public async signIn(
     @Body() signInDto: SignInDto,
     @Req() request: Request,
