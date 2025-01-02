@@ -66,7 +66,7 @@ export class RefreshTokensProvider {
         session.expiresAt.getTime() - Date.now() < ONE_DAY_MS;
 
       if (sessionNeedsRefresh) {
-        const updatedSession = await this.sessionProvider.update(sessionId, {
+        await this.sessionProvider.update(sessionId, {
           ...session,
           expiresAt: new Date(Date.now() + this.jwtConfiguration.sessionTtl),
         });
