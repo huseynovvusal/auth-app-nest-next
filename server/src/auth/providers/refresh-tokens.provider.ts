@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { RequestUser } from '../types/requestUser.type';
 import { JwtService } from '@nestjs/jwt';
@@ -7,6 +13,10 @@ import { ConfigType } from '@nestjs/config';
 import { GenerateTokensProvider } from './generate-tokens.provider';
 import { UsersService } from 'src/users/users.service';
 import { RefreshToken } from '../interfaces/refreshToken.interface';
+import { REQUEST_REFRESH_PAYLOAD_KEY } from '../constants/auth.constants';
+import { SessionProvider } from './session.provider';
+import * as ERROR_MESSAGES from '../../common/constants/error.contants';
+import { ONE_DAY_MS } from 'src/common/constants/time.constants';
 
 @Injectable()
 export class RefreshTokensProvider {
@@ -29,18 +39,54 @@ export class RefreshTokensProvider {
      */
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    /*
+     * Inject SessionProvider
+     */
+    private readonly sessionProvider: SessionProvider,
   ) {}
 
   public async refreshTokens(request: RequestUser, response: Response) {
     try {
-      const refreshToken = request.cookies['refresh-token'];
+      //? Extract Refresh Token Payload
+      const { sessionId, sub }: RefreshToken =
+        request[REQUEST_REFRESH_PAYLOAD_KEY];
 
-      const { sub } = await this.jwtService.verifyAsync<RefreshToken>(
-        refreshToken,
-        this.jwtConfiguration,
+      // ! Debugging
+      console.log('Refresh Token Payload', { sessionId, sub });
+
+      //? Find and check session
+      const session = await this.sessionProvider.findOneById(sessionId);
+
+      if (!session || session.expiresAt.getTime() < Date.now()) {
+        throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
+      }
+
+      //? Update session if needed
+      const sessionNeedsRefresh =
+        session.expiresAt.getTime() - Date.now() < ONE_DAY_MS;
+
+      if (sessionNeedsRefresh) {
+        const updatedSession = await this.sessionProvider.update(sessionId, {
+          ...session,
+          expiresAt: new Date(Date.now() + this.jwtConfiguration.sessionTtl),
+        });
+      }
+
+      //? Find and check user
+      const user = await this.usersService.findOneById(sub);
+
+      if (!user) {
+        throw new BadRequestException(ERROR_MESSAGES.USER_NOT_FOUND);
+      }
+
+      //? Generate new tokens
+      await this.generateTokensProvider.generateTokens(
+        user,
+        sessionId,
+        response,
       );
-
-      //TODO:   const user = this.usersService.find
-    } catch (error) {}
+    } catch (error) {
+      throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
+    }
   }
 }

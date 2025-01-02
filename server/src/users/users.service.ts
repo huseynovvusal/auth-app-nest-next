@@ -6,6 +6,7 @@ import { FindOneByGoogleIdProvider } from './providers/find-one-by-google-id.pro
 import { CreateGoogleUserProvider } from './providers/create-google-user.provider';
 import { GoogleUser } from './interfaces/google-user.interface';
 import { FindOneByEmailProvider } from './providers/find-one-by-email.provider';
+import { FindOneByIdProvider } from './providers/find-one-by-id.provider';
 
 /*
  * Users Service
@@ -25,6 +26,10 @@ export class UsersService {
      * Inject Find One By Email Provider
      */
     private readonly findOneByEmailProvider: FindOneByEmailProvider,
+    /*
+     * Inject FindOneByIdProvider
+     */
+    private readonly findOneByIdProvider: FindOneByIdProvider,
     /*
      * Inject Create Google User Provider
      */
@@ -67,5 +72,12 @@ export class UsersService {
    */
   public async findOneByEmail(email: string) {
     return await this.findOneByEmailProvider.findOneByEmail(email);
+  }
+
+  /*
+   * Find one user by id
+   */
+  public async findOneById(id: number) {
+    return await this.findOneByIdProvider.findById(id);
   }
 }

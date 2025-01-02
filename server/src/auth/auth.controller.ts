@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
 import { SignInDto } from './dtos/sign-in.dto';
 import { AuthService } from './auth.service';
@@ -17,6 +18,7 @@ import { Request, Response } from 'express';
 import { RequestUser } from './types/requestUser.type';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
+import { RefreshTokensGuard } from './guards/refresh-tokens/refresh-tokens.guard';
 
 /*
  * Auth Controller
@@ -63,7 +65,8 @@ export class AuthController {
    * Refresh Token
    */
   @Get('refresh')
-  @Auth(AuthType.Cookie)
+  @Auth(AuthType.None)
+  @UseGuards(RefreshTokensGuard)
   public async refreshToken(
     @Req() request: RequestUser,
     @Res({ passthrough: true }) response: Response,

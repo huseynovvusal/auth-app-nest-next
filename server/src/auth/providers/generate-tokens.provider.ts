@@ -7,6 +7,8 @@ import { IActiveUser } from '../interfaces/active-user.interface';
 import { CookieOptions, Response } from 'express';
 import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { REFRESH_TOKEN_PATH } from '../constants/auth.constants';
+import { AccessToken } from '../interfaces/accessToken.interface';
+import { RefreshToken } from '../interfaces/refreshToken.interface';
 
 const NODE_ENV = process.env.NODE_ENV;
 const IS_PRODUCTION = NODE_ENV === 'production';
@@ -59,7 +61,7 @@ export class GenerateTokensProvider {
     response: Response,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const [accessToken, refreshToken] = await Promise.all([
-      this.signToken<Partial<IActiveUser>>(
+      this.signToken<Omit<AccessToken, 'sub'>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         {
@@ -67,7 +69,13 @@ export class GenerateTokensProvider {
           sessionId,
         },
       ),
-      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
+      this.signToken<Omit<RefreshToken, 'sub'>>(
+        user.id,
+        this.jwtConfiguration.refreshTokenTtl,
+        {
+          sessionId,
+        },
+      ),
     ]);
 
     const accessTokenExpiry = new Date(
