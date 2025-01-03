@@ -61,16 +61,11 @@ export class RefreshTokensProvider {
         throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
       }
 
-      //? Update session if needed
-      const sessionNeedsRefresh =
-        session.expiresAt.getTime() - Date.now() < ONE_DAY_MS;
-
-      if (sessionNeedsRefresh) {
-        await this.sessionProvider.update(sessionId, {
-          ...session,
-          expiresAt: new Date(Date.now() + this.jwtConfiguration.sessionTtl),
-        });
-      }
+      //? Update session
+      await this.sessionProvider.update(sessionId, {
+        ...session,
+        expiresAt: new Date(Date.now() + this.jwtConfiguration.sessionTtl),
+      });
 
       //? Find and check user
       const user = await this.usersService.findOneById(sub);
