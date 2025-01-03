@@ -16,7 +16,6 @@ import { RefreshToken } from '../interfaces/refreshToken.interface';
 import { REQUEST_REFRESH_PAYLOAD_KEY } from '../constants/auth.constants';
 import { SessionProvider } from './session.provider';
 import * as ERROR_MESSAGES from '../../common/constants/error.contants';
-import { ONE_DAY_MS } from 'src/common/constants/time.constants';
 
 @Injectable()
 export class RefreshTokensProvider {
