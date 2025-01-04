@@ -16,7 +16,11 @@ export class CreateGoogleUserProvider {
 
   public async createGoogleUser(googleUser: GoogleUser) {
     try {
-      const user = this.userRepository.create(googleUser);
+      const user = this.userRepository.create({
+        ...googleUser,
+        //? Set verified to true
+        verified: true,
+      });
 
       return await this.userRepository.save(user);
     } catch (error) {
