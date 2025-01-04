@@ -16,7 +16,7 @@ export class GoogleAuthenticationController {
   ) {}
 
   @Post()
-  @Auth(AuthType.None)
+  // @Auth(AuthType.NoCookie)
   public async authenticate(
     @Body() googleTokenDto: GoogleTokenDto,
     @Req() request: Request,

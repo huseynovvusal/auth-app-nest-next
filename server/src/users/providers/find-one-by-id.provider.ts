@@ -19,7 +19,7 @@ export class FindOneByIdProvider {
   ) {}
 
   public async findById(id: number): Promise<User> {
-    let user: User = undefined;
+    let user: User | undefined;
 
     try {
       user = await this.usersRepository.findOneBy({ id });

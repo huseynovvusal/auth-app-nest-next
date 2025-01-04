@@ -20,7 +20,7 @@ export class FindOneByEmailProvider {
   ) {}
 
   public async findOneByEmail(email: string): Promise<User> {
-    let user: User = undefined;
+    let user: User | undefined;
 
     try {
       user = await this.userRepository.findOneBy({ email });
