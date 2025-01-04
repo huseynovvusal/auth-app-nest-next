@@ -77,15 +77,16 @@ export class GoogleAuthenticationService implements OnModuleInit {
       //? Find the user by Google ID
       const user = await this.usersService.findOneByGoogleId(googleId);
 
-      //? Create a new session
-      const session = await this.sessionProvider.create({
-        user,
-        userAgent,
-        ip,
-      });
-
       //? If the user exists, generate tokens
       if (user) {
+        //? Create a new session
+        const session = await this.sessionProvider.create({
+          user,
+          userAgent,
+          ip,
+        });
+
+        //? Generate tokens
         return await this.generateTokensProvider.generateTokens(
           user,
           session.id,
@@ -94,7 +95,6 @@ export class GoogleAuthenticationService implements OnModuleInit {
       }
 
       //? If the user does not exist, create a new user
-
       const newUser = await this.usersService.createGoogleUser({
         email,
         firstName,

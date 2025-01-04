@@ -2,20 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply h-full;
+}
+
+.container {
+  @apply py-10 w-full md:w-11/12 lg:w-10/12 2xl:w-9/12 mx-auto flex flex-col justify-center overflow-hidden px-4 md:px-0;
 }
