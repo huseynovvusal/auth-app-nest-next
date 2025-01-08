@@ -16,16 +16,17 @@ export class GoogleAuthenticationController {
   ) {}
 
   @Post()
-  // @Auth(AuthType.NoCookie)
+  @Auth(AuthType.None)
   public async authenticate(
     @Body() googleTokenDto: GoogleTokenDto,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
     @Ip() ip: string,
-  ) {
+  ): Promise<void> {
     const userAgent = request.headers['user-agent'];
 
-    return await this.googleAuthenticationService.authenticate(
+    // return
+    await this.googleAuthenticationService.authenticate(
       googleTokenDto,
       userAgent,
       ip,

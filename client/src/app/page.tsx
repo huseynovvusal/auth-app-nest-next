@@ -1,7 +1,6 @@
 "use client"
 
-import env from "@/lib/env/client"
-import { GoogleLogin } from "@react-oauth/google"
+import ContinueWithGoogleButton from "@/components/auth/ContinueWithGoogleButton"
 
 export default function Home() {
   return (
@@ -14,18 +13,7 @@ export default function Home() {
       </p>
 
       <div>
-        <GoogleLogin
-          onSuccess={(response) =>
-            fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/google-authentication`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ token: response.credential }),
-              credentials: "include",
-            }).then((res) => console.log(res))
-          }
-        />
+        <ContinueWithGoogleButton />
       </div>
     </main>
   )
