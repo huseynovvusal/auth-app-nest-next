@@ -1,6 +1,6 @@
 "use client"
 
-import config from "@/config/config"
+import env from "@/lib/env/client"
 import { GoogleLogin } from "@react-oauth/google"
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
       <div>
         <GoogleLogin
           onSuccess={(response) =>
-            fetch(`${config.apiUrl!}/api/auth/google-authentication`, {
+            fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/google-authentication`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
