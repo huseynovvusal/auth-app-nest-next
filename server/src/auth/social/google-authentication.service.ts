@@ -7,15 +7,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 import jwtConfig from '../config/jwt.config';
 import { GoogleTokenDto } from './dtos/google-token.dto';
 import { UsersService } from 'src/users/users.service';
 import { GenerateTokensProvider } from '../providers/generate-tokens.provider';
 import { Response } from 'express';
 import { SessionProvider } from '../providers/session.provider';
-import axios from 'axios';
-import { User } from 'src/users/entities/user.entity';
 
 /*
  * Google Authentication Service
@@ -58,42 +56,26 @@ export class GoogleAuthenticationService implements OnModuleInit {
     userAgent: string,
     ip: string,
     response: Response,
-  ): Promise<void> {
+  ) {
     try {
-      let user: User | undefined;
-      let payload:
-        | Pick<TokenPayload, 'sub' | 'given_name' | 'family_name' | 'email'>
-        | undefined;
+      //? Verify the Google token
+      const ticket = await this.oAuthClient.verifyIdToken({
+        idToken: googleTokenDto.token,
+      });
 
-      //? Check if the token is a JWT token
-      if (googleTokenDto?.isJwtToken) {
-        const googleUserInfo = await axios.get(
-          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${googleTokenDto.token}`,
-        );
+      //? Get the payload
+      const {
+        email,
+        sub: googleId,
+        given_name: firstName,
+        family_name: lastName,
+      } = ticket.getPayload();
 
-        const googleUserEmail = googleUserInfo.data.email;
+      // !
+      console.log('Google Payload:', { email, googleId });
 
-        user = await this.usersService.findOneByEmail(googleUserEmail);
-
-        //TODO: Seperate provider for JWT token which does the same job as ID Token.
-      } else {
-        //? Verify the Google token
-        const ticket = await this.oAuthClient.verifyIdToken({
-          idToken: googleTokenDto.token,
-        });
-
-        //? Get the payload
-        payload = ticket.getPayload();
-
-        // !
-        console.log('Google Payload:', {
-          email: payload.email,
-          googleId: payload.sub,
-        });
-
-        //? Find the user by Google ID
-        user = await this.usersService.findOneByGoogleId(payload.sub);
-      }
+      //? Find the user by Google ID
+      const user = await this.usersService.findOneByGoogleId(googleId);
 
       //? If the user exists, generate tokens
       if (user) {
@@ -105,8 +87,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
         });
 
         //? Generate tokens
-        // return
-        await this.generateTokensProvider.generateTokens(
+        return await this.generateTokensProvider.generateTokens(
           user,
           session.id,
           response,
@@ -115,10 +96,10 @@ export class GoogleAuthenticationService implements OnModuleInit {
 
       //? If the user does not exist, create a new user
       const newUser = await this.usersService.createGoogleUser({
-        email: payload.email,
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        googleId: payload.sub,
+        email,
+        firstName,
+        lastName,
+        googleId,
       });
 
       //? Create a new session
@@ -134,14 +115,12 @@ export class GoogleAuthenticationService implements OnModuleInit {
         newUser.email,
       );
 
-      // return;
-      await this.generateTokensProvider.generateTokens(
+      return await this.generateTokensProvider.generateTokens(
         newUser,
         newSession.id,
         response,
       );
     } catch (error) {
-      console.log('Error during Google authentication:', error);
       throw new UnauthorizedException(error);
     }
   }
