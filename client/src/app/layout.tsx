@@ -5,6 +5,7 @@ import "./globals.css"
 import env from "@/lib/env/server"
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import Navbar from "@/components/layout/Navbar"
+import { Toaster } from "@/components/ui/toaster"
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -29,7 +30,9 @@ export default function RootLayout({
         <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
           <Navbar />
 
-          {children}
+          <main className="container mx-auto h-full">{children}</main>
+
+          <Toaster />
         </GoogleOAuthProvider>
       </body>
     </html>

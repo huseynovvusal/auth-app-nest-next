@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function Navbar() {
   return (
-    <nav className="navbar bg-base-100 fixed top-0 left-0 w-full z-50">
+    <nav className="navbar bg-base-100 fixed top-0 left-0 w-full z-50 shadow-sm shadow-gray-50">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -26,7 +26,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar-center">
-        <Link href="/" className="text-xl">
+        <Link href="/" className="text-xl text-primary">
           Auth App
         </Link>
       </div>
