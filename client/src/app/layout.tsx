@@ -4,6 +4,7 @@ import "./globals.css"
 
 import env from "@/lib/env/server"
 import { GoogleOAuthProvider } from "@react-oauth/google"
+import Navbar from "@/components/layout/Navbar"
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -23,9 +24,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body className={`${poppins.variable} antialiased`}>
-        <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>{children}</GoogleOAuthProvider>
+        <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
+          <Navbar />
+
+          {children}
+        </GoogleOAuthProvider>
       </body>
     </html>
   )

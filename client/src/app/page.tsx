@@ -2,7 +2,7 @@
 
 import ContinueWithGoogleButton from "@/components/auth/ContinueWithGoogleButton"
 
-export default function Home() {
+export default function Page() {
   return (
     <main className="container flex flex-col items-center justify-center h-full gap-4">
       <h1 className="text-3xl font-semibold text-gray-900">Welcome to Auth App!</h1>
@@ -12,9 +12,7 @@ export default function Home() {
         as the frontend framework.
       </p>
 
-      <div>
-        <ContinueWithGoogleButton />
-      </div>
+      <ContinueWithGoogleButton />
     </main>
   )
 }
