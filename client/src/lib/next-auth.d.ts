@@ -13,6 +13,7 @@ declare module "next-auth" {
     }
     access_token: string
     refresh_token: string
+    expiresAt: Date
   }
 }
 
@@ -31,5 +32,6 @@ declare module "next-auth/jwt" {
     }
     access_token: string
     refresh_token: string
+    expiresAt: Date
   }
 }

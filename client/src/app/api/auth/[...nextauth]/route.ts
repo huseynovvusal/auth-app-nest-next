@@ -2,6 +2,31 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
 import env from "@/lib/env/server"
+import { JWT } from "next-auth/jwt"
+
+async function refreshToken(token: JWT): Promise<JWT> {
+  const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: token.refresh_token,
+    }),
+  })
+
+  const data = await response.json()
+
+  // !
+  console.log("Refreshed Token")
+
+  return {
+    ...token,
+    access_token: data?.access_token,
+    refresh_token: data?.refresh_token,
+    expiresAt: data?.expiresAt,
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -12,9 +37,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // !
-        console.log("credentials", credentials)
-
         if (!credentials?.email || !credentials?.password) {
           return null
         }
@@ -35,9 +57,10 @@ export const authOptions: NextAuthOptions = {
         const data = await response.json()
 
         // !
-        console.log("data", data)
+        // console.log("data", data)
 
         if (response.ok && data) {
+          console.log("OKKKK")
           return data
         }
 
@@ -55,7 +78,13 @@ export const authOptions: NextAuthOptions = {
         return { ...token, ...user }
       }
 
-      return token
+      if (new Date() < new Date(token.expiresAt)) {
+        console.log("Token is valid")
+        return token
+      }
+
+      console.log("Token is expired", token.expiresAt)
+      return await refreshToken(token)
     },
 
     async session({ token, session }) {

@@ -16,6 +16,8 @@ import { RefreshToken } from '../interfaces/refreshToken.interface';
 import { REQUEST_REFRESH_PAYLOAD_KEY } from '../constants/auth.constants';
 import { SessionProvider } from './session.provider';
 import * as ERROR_MESSAGES from '../../common/constants/error.contants';
+import RefreshTokenDto from '../dtos/refresh-token.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class RefreshTokensProvider {
@@ -44,13 +46,20 @@ export class RefreshTokensProvider {
     private readonly sessionProvider: SessionProvider,
   ) {}
 
-  public async refreshTokens(
-    request: RequestUser,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  public async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<{
+    access_token: string;
+    refresh_token: string;
+    expiresAt: Date;
+  }> {
     try {
+      const { token } = refreshTokenDto;
+
+      // ! Debugging
+      console.log('Refresh Token', token);
+
       //? Extract Refresh Token Payload
       const { sessionId, sub }: RefreshToken =
-        request[REQUEST_REFRESH_PAYLOAD_KEY];
+        await this.jwtService.verifyAsync(token);
 
       // ! Debugging
       console.log('Refresh Token Payload', { sessionId, sub });
@@ -76,7 +85,14 @@ export class RefreshTokensProvider {
       }
 
       //? Generate new tokens
-      return await this.generateTokensProvider.generateTokens(user, sessionId);
+      const { accessToken, expiresAt, refreshToken } =
+        await this.generateTokensProvider.generateTokens(user, sessionId);
+
+      return {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        expiresAt,
+      };
     } catch (error) {
       throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
     }

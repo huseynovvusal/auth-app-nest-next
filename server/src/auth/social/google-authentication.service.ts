@@ -60,6 +60,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
     access_token: string;
     refresh_token: string;
     user: User;
+    expiresAt: Date;
   }> {
     try {
       //? Verify the Google token
@@ -91,13 +92,14 @@ export class GoogleAuthenticationService implements OnModuleInit {
         });
 
         //? Generate tokens
-        const { accessToken, refreshToken } =
+        const { accessToken, refreshToken, expiresAt } =
           await this.generateTokensProvider.generateTokens(user, session.id);
 
         return {
           access_token: accessToken,
           refresh_token: refreshToken,
           user: user,
+          expiresAt,
         };
       }
 
@@ -122,7 +124,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
         newUser.email,
       );
 
-      const { accessToken, refreshToken } =
+      const { accessToken, refreshToken, expiresAt } =
         await this.generateTokensProvider.generateTokens(
           newUser,
           newSession.id,
@@ -132,6 +134,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
         access_token: accessToken,
         refresh_token: refreshToken,
         user: newUser,
+        expiresAt,
       };
     } catch (error) {
       throw new UnauthorizedException(error);

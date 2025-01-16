@@ -46,6 +46,7 @@ export class SignInProvider {
     access_token: string;
     refresh_token: string;
     user: User;
+    expiresAt: Date;
   }> {
     let user: User;
 
@@ -88,13 +89,14 @@ export class SignInProvider {
 
     //? Sign Access Token & Refresh Token (Set Cookies)
     // const { accessToken, refreshToken } =
-    const { accessToken, refreshToken } =
+    const { accessToken, refreshToken, expiresAt } =
       await this.generateTokensProvider.generateTokens(user, session.id);
 
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
       user: user,
+      expiresAt,
     };
   }
 }

@@ -10,7 +10,6 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
 } from '@nestjs/common';
 import { SignInDto } from './dtos/sign-in.dto';
 import { AuthService } from './auth.service';
@@ -18,10 +17,10 @@ import { Request, Response } from 'express';
 import { RequestUser } from './types/requestUser.type';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
-import { RefreshTokensGuard } from './guards/refresh-tokens/refresh-tokens.guard';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import RefreshTokenDto from './dtos/refresh-token.dto';
 
 /*
  * Auth Controller
@@ -65,7 +64,7 @@ export class AuthController {
     @Body() signInDto: SignInDto,
     @Req() request: Request,
     @Ip() ip: string,
-  ): Promise<any> {
+  ) {
     const userAgent = request.headers['user-agent'];
 
     return this.authService.signIn(signInDto, userAgent, ip);
@@ -83,13 +82,9 @@ export class AuthController {
   /*
    * Refresh Token
    */
-  @Get('refresh')
+  @Post('refresh')
   @Auth(AuthType.None)
-  @UseGuards(RefreshTokensGuard)
-  public async refreshToken(
-    @Req() request: RequestUser,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return await this.authService.refreshTokens(request);
+  public async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return await this.authService.refreshTokens(refreshTokenDto);
   }
 }

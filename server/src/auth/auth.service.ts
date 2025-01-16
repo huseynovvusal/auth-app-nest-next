@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { LogOutProvider } from './providers/log-out.provider';
 import { RequestUser } from './types/requestUser.type';
 import { RefreshTokensProvider } from './providers/refresh-tokens.provider';
+import RefreshTokenDto from './dtos/refresh-token.dto';
 
 /*
  * Auth Service
@@ -43,7 +44,7 @@ export class AuthService {
   /*
    * Refresh Tokens
    */
-  public async refreshTokens(request: RequestUser) {
-    return await this.refreshTokensProvider.refreshTokens(request);
+  public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    return await this.refreshTokensProvider.refreshTokens(refreshTokenDto);
   }
 }

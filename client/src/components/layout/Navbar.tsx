@@ -1,8 +1,33 @@
 "use client"
 
+import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
+import { useState } from "react"
+import env from "@/lib/env/client"
+import { toast } from "@/hooks/use-toast"
 
 export default function Navbar() {
+  const { data: session } = useSession()
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogOut = async () => {
+    setIsLoggingOut(true)
+
+    try {
+      await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/log-out`)
+      await signOut({ redirect: true })
+    } catch (error) {
+      toast({
+        title: "Log out failed",
+        description: error instanceof Error ? error.message : "An error occurred while logging out",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
+
   return (
     <nav className="navbar bg-base-100 fixed top-0 left-0 w-full z-50 shadow-sm shadow-gray-50">
       <div className="navbar-start">
@@ -28,12 +53,23 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="navbar-end gap-2">
-        <Link className="btn btn-sm btn-ghost" href="/register">
-          Register
-        </Link>
-        <Link className="btn btn-sm btn-primary" href="/sign-in">
-          Sign in
-        </Link>
+        {session?.user ? (
+          <button
+            onClick={handleLogOut}
+            className={`btn btn-sm ${isLoggingOut ? "btn-disabled pointer-events-none" : "btn-accent"}`}
+          >
+            Log out
+          </button>
+        ) : (
+          <>
+            <Link className="btn btn-sm btn-ghost" href="/register">
+              Register
+            </Link>
+            <Link className="btn btn-sm btn-primary" href="/sign-in">
+              Sign in
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   )

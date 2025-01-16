@@ -58,7 +58,7 @@ export class GenerateTokensProvider {
   public async generateTokens(
     user: User,
     sessionId: number,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; expiresAt: Date }> {
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Omit<AccessToken, 'sub'>>(
         user.id,
@@ -97,6 +97,10 @@ export class GenerateTokensProvider {
     //     path: REFRESH_TOKEN_PATH,
     //   });
 
-    return { accessToken, refreshToken };
+    return {
+      accessToken,
+      refreshToken,
+      expiresAt: accessTokenExpiry,
+    };
   }
 }
