@@ -43,34 +43,32 @@ export class AuthController {
    */
   @Post('register')
   // Restrict access to this route to logged-in users
-  @Auth(AuthType.NoCookie)
+  @Auth(AuthType.None)
   @UseInterceptors(ClassSerializerInterceptor)
   public async create(
     @Body() createUserDto: CreateUserDto,
     @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
     @Ip() ip: string,
-  ): Promise<User> {
+  ) {
     const userAgent = request.headers['user-agent'];
 
-    return this.usersService.create(createUserDto, userAgent, ip, response);
+    return this.usersService.create(createUserDto, userAgent, ip);
   }
   /*
    * Sign In
    */
   @Post('sign-in')
-  @Auth(AuthType.NoCookie)
+  @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(ClassSerializerInterceptor)
   public async signIn(
     @Body() signInDto: SignInDto,
     @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
     @Ip() ip: string,
   ): Promise<any> {
     const userAgent = request.headers['user-agent'];
 
-    return this.authService.signIn(signInDto, userAgent, ip, response);
+    return this.authService.signIn(signInDto, userAgent, ip);
   }
 
   /*
@@ -78,11 +76,8 @@ export class AuthController {
    */
   @Get('log-out')
   // @Auth(AuthType.Cookie)
-  public async logOut(
-    @Req() request: RequestUser,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    await this.authService.logOut(request, response);
+  public async logOut(@Req() request: RequestUser) {
+    await this.authService.logOut(request);
   }
 
   /*

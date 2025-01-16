@@ -29,20 +29,15 @@ export class AuthService {
   /*
    * Sign In
    */
-  public async signIn(
-    signInDto: SignInDto,
-    userAgent: string,
-    ip: string,
-    response: Response,
-  ) {
-    return this.signInProvider.signIn(signInDto, userAgent, ip, response);
+  public async signIn(signInDto: SignInDto, userAgent: string, ip: string) {
+    return this.signInProvider.signIn(signInDto, userAgent, ip);
   }
 
   /*
    * Log Out
    */
-  public async logOut(request: RequestUser, response: Response) {
-    return await this.logOutProvider.logOut(request, response);
+  public async logOut(request: RequestUser) {
+    return await this.logOutProvider.logOut(request);
   }
 
   /*

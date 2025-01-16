@@ -56,7 +56,6 @@ export class GoogleAuthenticationService implements OnModuleInit {
     googleTokenDto: GoogleTokenDto,
     userAgent: string,
     ip: string,
-    response: Response,
   ): Promise<{
     access_token: string;
     refresh_token: string;
@@ -93,11 +92,7 @@ export class GoogleAuthenticationService implements OnModuleInit {
 
         //? Generate tokens
         const { accessToken, refreshToken } =
-          await this.generateTokensProvider.generateTokens(
-            user,
-            session.id,
-            response,
-          );
+          await this.generateTokensProvider.generateTokens(user, session.id);
 
         return {
           access_token: accessToken,
@@ -131,7 +126,6 @@ export class GoogleAuthenticationService implements OnModuleInit {
         await this.generateTokensProvider.generateTokens(
           newUser,
           newSession.id,
-          response,
         );
 
       return {

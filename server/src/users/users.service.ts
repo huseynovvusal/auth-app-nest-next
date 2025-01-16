@@ -43,14 +43,8 @@ export class UsersService {
     createUserDto: CreateUserDto,
     userAgent: string,
     ip: string,
-    response: Response,
   ) {
-    return await this.createUserProvider.create(
-      createUserDto,
-      userAgent,
-      ip,
-      response,
-    );
+    return await this.createUserProvider.create(createUserDto, userAgent, ip);
   }
 
   /*

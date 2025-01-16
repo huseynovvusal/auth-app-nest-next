@@ -20,7 +20,6 @@ export class GoogleAuthenticationController {
   public async authenticate(
     @Body() googleTokenDto: GoogleTokenDto,
     @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
     @Ip() ip: string,
   ): Promise<void> {
     const userAgent = request.headers['user-agent'];
@@ -30,7 +29,6 @@ export class GoogleAuthenticationController {
       googleTokenDto,
       userAgent,
       ip,
-      response,
     );
   }
 }

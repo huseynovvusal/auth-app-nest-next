@@ -42,7 +42,6 @@ export class SignInProvider {
     signInDto: SignInDto,
     userAgent: string,
     ip: string,
-    response: Response,
   ): Promise<{
     access_token: string;
     refresh_token: string;
@@ -90,11 +89,7 @@ export class SignInProvider {
     //? Sign Access Token & Refresh Token (Set Cookies)
     // const { accessToken, refreshToken } =
     const { accessToken, refreshToken } =
-      await this.generateTokensProvider.generateTokens(
-        user,
-        session.id,
-        response,
-      );
+      await this.generateTokensProvider.generateTokens(user, session.id);
 
     return {
       access_token: accessToken,

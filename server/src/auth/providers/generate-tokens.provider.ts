@@ -58,7 +58,6 @@ export class GenerateTokensProvider {
   public async generateTokens(
     user: User,
     sessionId: number,
-    response: Response,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Omit<AccessToken, 'sub'>>(

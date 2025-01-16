@@ -22,7 +22,7 @@ export class LogOutProvider {
    * Log Out
    */
   @UseGuards(AccessTokenGuard)
-  public async logOut(request: RequestUser, response: Response): Promise<void> {
+  public async logOut(request: RequestUser): Promise<void> {
     const user = request.user;
 
     try {
@@ -34,11 +34,11 @@ export class LogOutProvider {
     // !
     console.log('Log Out -> User:', user.email);
 
-    //? Clear Cookies
-    response
-      .clearCookie(COOKIE_KEYS.ACCESS_TOKEN)
-      .clearCookie(COOKIE_KEYS.REFRESH_TOKEN, {
-        path: REFRESH_TOKEN_PATH,
-      });
+    // //? Clear Cookies
+    // response
+    //   .clearCookie(COOKIE_KEYS.ACCESS_TOKEN)
+    //   .clearCookie(COOKIE_KEYS.REFRESH_TOKEN, {
+    //     path: REFRESH_TOKEN_PATH,
+    //   });
   }
 }

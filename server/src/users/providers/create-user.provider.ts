@@ -48,7 +48,6 @@ export class CreateUserProvider {
     createUserDto: CreateUserDto,
     userAgent: string,
     ip: string,
-    response: Response,
   ): Promise<{
     user: User;
   }> {
