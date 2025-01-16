@@ -6,11 +6,17 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import env from "@/lib/env/client"
 import { useToast } from "@/hooks/use-toast"
-import { signIn } from "next-auth/react"
 
-const signinSchema = z.object({
+const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
+  firstName: z.string().min(2, "First name is required").max(96, "First name must be less than 96 characters"),
+  lastName: z.string().min(2, "Last name is required").max(96, "Last name must be less than 96 characters"),
+  password: z
+    .string()
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      "Minimum eight characters, at least one letter, one number and one special character"
+    ),
 })
 
 export default function Page() {
@@ -18,19 +24,19 @@ export default function Page() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof signinSchema>>({
-    resolver: zodResolver(signinSchema),
+  } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
   })
 
   const [loading, setLoading] = useState(false)
 
   const { toast } = useToast()
 
-  const onSubmit = async (data: z.infer<typeof signinSchema>) => {
+  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     setLoading(true)
 
     try {
-      const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/create`, {
+      const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,18 +47,16 @@ export default function Page() {
       if (response.ok) {
         toast({
           title: "Sign in successful",
-          description: "You have successfully signed in.",
+          description: "You have successfully registered.",
         })
       } else {
         const data = await response.json()
 
         toast({
           title: data?.error || "Sign in failed",
-          description: data?.message || "You have successfully signed in.",
+          description: data?.message || "An error occurred while creating new user.",
           variant: "destructive",
         })
-
-        console.log()
       }
     } catch (error) {
       toast({
@@ -60,6 +64,8 @@ export default function Page() {
         description: "An error occurred while signing in.",
         variant: "destructive",
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -69,21 +75,10 @@ export default function Page() {
         loading && "pointer-events-none opacity-75"
       } flex flex-col items-center justify-center h-full gap-4`}
     >
-      <form
-        className="flex flex-col gap-2 max-w-[500px]"
-        // onSubmit={handleSubmit(onSubmit)}
-        onSubmit={handleSubmit((data: z.infer<typeof signinSchema>) =>
-          signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: true,
-            callbackUrl: "http://localhost:3000",
-          })
-        )}
-      >
+      <form className="flex flex-col gap-2 max-w-[500px]" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2">
-          <h1 className="text-4xl text-primary">Sign In</h1>
-          <p className="text-gray-500 font-thin text-sm">Fill in the form below to sign in.</p>
+          <h1 className="text-4xl text-primary">Register</h1>
+          <p className="text-gray-500 font-thin text-sm">Fill in the form below to register.</p>
         </div>
 
         <label className="input input-bordered flex items-center gap-2">
@@ -94,7 +89,20 @@ export default function Page() {
           <input id="email" type="text" className="grow" placeholder="Email" {...register("email")} />
         </label>
         {errors.email && <p className="text-destructive text-xs">{errors.email.message?.toString()}</p>}
-
+        <div className="grid grid-cols-2 gap-2">
+          <label className="input input-bordered flex items-center gap-2">
+            <input id="firstName" type="text" className="grow" placeholder="First name" {...register("firstName")} />
+          </label>
+          <label className="input input-bordered flex items-center gap-2">
+            <input id="lastName" type="text" className="grow" placeholder="Last name" {...register("lastName")} />
+          </label>
+        </div>
+        {(errors.firstName || errors.lastName) && (
+          <div className="grid grid-cols-2 gap-2">
+            {errors.firstName && <p className="text-destructive text-xs">{errors.firstName.message?.toString()}</p>}
+            {errors.lastName && <p className="text-destructive text-xs">{errors.lastName.message?.toString()}</p>}
+          </div>
+        )}
         <label className="input input-bordered flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 opacity-70">
             <path

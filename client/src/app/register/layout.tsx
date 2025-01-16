@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Auth App | Sign In",
+  title: "Auth App | Register",
 }
 
 export default function Layout({

@@ -19,6 +19,9 @@ import { RequestUser } from './types/requestUser.type';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
 import { RefreshTokensGuard } from './guards/refresh-tokens/refresh-tokens.guard';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 /*
  * Auth Controller
@@ -27,10 +30,31 @@ import { RefreshTokensGuard } from './guards/refresh-tokens/refresh-tokens.guard
 export class AuthController {
   constructor(
     /*
-     * Inject AuthService
+     * Inject Auth Service
      */
     private readonly authService: AuthService,
+    /*
+     * Inject Users Service
+     */
+    private readonly usersService: UsersService,
   ) {}
+  /*
+   * Register
+   */
+  @Post('register')
+  // Restrict access to this route to logged-in users
+  @Auth(AuthType.NoCookie)
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async create(
+    @Body() createUserDto: CreateUserDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+    @Ip() ip: string,
+  ): Promise<User> {
+    const userAgent = request.headers['user-agent'];
+
+    return this.usersService.create(createUserDto, userAgent, ip, response);
+  }
   /*
    * Sign In
    */

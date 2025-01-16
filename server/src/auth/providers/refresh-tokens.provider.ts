@@ -44,7 +44,10 @@ export class RefreshTokensProvider {
     private readonly sessionProvider: SessionProvider,
   ) {}
 
-  public async refreshTokens(request: RequestUser, response: Response) {
+  public async refreshTokens(
+    request: RequestUser,
+    response: Response,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       //? Extract Refresh Token Payload
       const { sessionId, sub }: RefreshToken =
@@ -74,7 +77,7 @@ export class RefreshTokensProvider {
       }
 
       //? Generate new tokens
-      await this.generateTokensProvider.generateTokens(
+      return await this.generateTokensProvider.generateTokens(
         user,
         sessionId,
         response,

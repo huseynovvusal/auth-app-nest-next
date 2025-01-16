@@ -43,7 +43,11 @@ export class SignInProvider {
     userAgent: string,
     ip: string,
     response: Response,
-  ): Promise<User> {
+  ): Promise<{
+    access_token: string;
+    refresh_token: string;
+    user: User;
+  }> {
     let user: User;
 
     //? Find user by email
@@ -85,12 +89,17 @@ export class SignInProvider {
 
     //? Sign Access Token & Refresh Token (Set Cookies)
     // const { accessToken, refreshToken } =
-    await this.generateTokensProvider.generateTokens(
-      user,
-      session.id,
-      response,
-    );
+    const { accessToken, refreshToken } =
+      await this.generateTokensProvider.generateTokens(
+        user,
+        session.id,
+        response,
+      );
 
-    return user;
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      user: user,
+    };
   }
 }

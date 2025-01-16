@@ -85,18 +85,18 @@ export class GenerateTokensProvider {
       Date.now() + this.jwtConfiguration.refreshTokenTtl * 1000,
     );
 
-    response
-      //? Set the access token cookie
-      .cookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
-        ...this._defaultCookieOptions,
-        expires: accessTokenExpiry,
-      })
-      //? Set the refresh token cookie
-      .cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
-        ...this._defaultCookieOptions,
-        expires: refreshTokenExpiry,
-        path: REFRESH_TOKEN_PATH,
-      });
+    // response
+    //   //? Set the access token cookie
+    //   .cookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
+    //     ...this._defaultCookieOptions,
+    //     expires: accessTokenExpiry,
+    //   })
+    //   //? Set the refresh token cookie
+    //   .cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
+    //     ...this._defaultCookieOptions,
+    //     expires: refreshTokenExpiry,
+    //     path: REFRESH_TOKEN_PATH,
+    //   });
 
     return { accessToken, refreshToken };
   }

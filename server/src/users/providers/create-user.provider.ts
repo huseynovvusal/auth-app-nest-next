@@ -49,7 +49,9 @@ export class CreateUserProvider {
     userAgent: string,
     ip: string,
     response: Response,
-  ): Promise<User> {
+  ): Promise<{
+    user: User;
+  }> {
     let existingUser = undefined;
 
     try {
@@ -87,20 +89,22 @@ export class CreateUserProvider {
 
       //? Sign Access Token & Refresh Token (Set Cookies)
       // const { accessToken, refreshToken } =
-      await this.generateTokensProvider.generateTokens(
-        newUser,
-        session.id,
-        response,
-      );
+      // const {accessToken, refreshToken} = await this.generateTokensProvider.generateTokens(
+      //   newUser,
+      //   session.id,
+      //   response,
+      // );
 
       //? Log the new user
-      this.logger.log(`New user was created via email: ${newUser.email}`);
+      this.logger.log(`New user created via email: ${newUser.email}`);
     } catch (error) {
       this.logger.error(error);
       throw new RequestTimeoutException(ERROR_MESSAGES.ERROR_CREATING_USER);
     }
 
     //? Return the new user
-    return newUser;
+    return {
+      user: newUser,
+    };
   }
 }

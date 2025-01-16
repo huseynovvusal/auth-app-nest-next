@@ -6,6 +6,8 @@ import env from "@/lib/env/server"
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import Navbar from "@/components/layout/Navbar"
 import { Toaster } from "@/components/ui/toaster"
+import { SessionProvider } from "next-auth/react"
+import Providers from "@/components/Providers"
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -27,13 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <body className={`${poppins.variable} antialiased`}>
-        <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
+        <Providers>
           <Navbar />
 
           <main className="container mx-auto h-full">{children}</main>
-
           <Toaster />
-        </GoogleOAuthProvider>
+        </Providers>
       </body>
     </html>
   )

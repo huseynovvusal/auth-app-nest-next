@@ -14,6 +14,7 @@ import { UsersService } from 'src/users/users.service';
 import { GenerateTokensProvider } from '../providers/generate-tokens.provider';
 import { Response } from 'express';
 import { SessionProvider } from '../providers/session.provider';
+import { User } from 'src/users/entities/user.entity';
 
 /*
  * Google Authentication Service
@@ -56,7 +57,11 @@ export class GoogleAuthenticationService implements OnModuleInit {
     userAgent: string,
     ip: string,
     response: Response,
-  ) {
+  ): Promise<{
+    access_token: string;
+    refresh_token: string;
+    user: User;
+  }> {
     try {
       //? Verify the Google token
       const ticket = await this.oAuthClient.verifyIdToken({
@@ -87,11 +92,18 @@ export class GoogleAuthenticationService implements OnModuleInit {
         });
 
         //? Generate tokens
-        return await this.generateTokensProvider.generateTokens(
-          user,
-          session.id,
-          response,
-        );
+        const { accessToken, refreshToken } =
+          await this.generateTokensProvider.generateTokens(
+            user,
+            session.id,
+            response,
+          );
+
+        return {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          user: user,
+        };
       }
 
       //? If the user does not exist, create a new user
@@ -115,11 +127,18 @@ export class GoogleAuthenticationService implements OnModuleInit {
         newUser.email,
       );
 
-      return await this.generateTokensProvider.generateTokens(
-        newUser,
-        newSession.id,
-        response,
-      );
+      const { accessToken, refreshToken } =
+        await this.generateTokensProvider.generateTokens(
+          newUser,
+          newSession.id,
+          response,
+        );
+
+      return {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        user: newUser,
+      };
     } catch (error) {
       throw new UnauthorizedException(error);
     }

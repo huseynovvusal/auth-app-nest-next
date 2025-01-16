@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import jwtConfig from 'src/auth/config/jwt.config';
 import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
@@ -32,17 +33,17 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     //? Extract Access Token
-    const accessToken = request.cookies?.[COOKIE_KEYS.ACCESS_TOKEN];
+    const token = this.extractReuqestFromHeader(request);
 
     //? Check Access Token
-    if (!accessToken) {
+    if (!token) {
       throw new UnauthorizedException();
     }
 
     //? Verify Access Token
     try {
       const payload = await this.jwtService.verifyAsync<AccessToken>(
-        accessToken,
+        token,
         this.jwtConfiguration,
       );
 
@@ -55,5 +56,11 @@ export class AccessTokenGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private extractReuqestFromHeader(request: Request) {
+    const [_, token] = request.headers.authorization?.split(' ') ?? [];
+
+    return token;
   }
 }
