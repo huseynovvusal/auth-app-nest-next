@@ -8,6 +8,7 @@ import env from "@/lib/env/client"
 import { useToast } from "@/hooks/use-toast"
 import ContinueWithGoogleButton from "@/components/auth/ContinueWithGoogleButton"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -29,10 +30,10 @@ export default function Page() {
   } = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
   })
+  const router = useRouter()
+  const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
-
-  const { toast } = useToast()
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     setLoading(true)
@@ -48,22 +49,25 @@ export default function Page() {
 
       if (response.ok) {
         toast({
-          title: "Sign in successful",
-          description: "You have successfully registered.",
+          title: "Registration successful",
+          description: "You have successfully registered. Now, you can sign in.",
         })
+
+        // Redirect to sign in page
+        router.push("/sign-in")
       } else {
         const data = await response.json()
 
         toast({
-          title: data?.error || "Sign in failed",
+          title: data?.error || "Registration failed",
           description: data?.message || "An error occurred while creating new user.",
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Sign in failed",
-        description: "An error occurred while signing in.",
+        title: "Registration failed",
+        description: "An error occurred while creating new user.",
         variant: "destructive",
       })
     } finally {
