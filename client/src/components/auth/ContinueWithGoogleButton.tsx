@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import env from "@/lib/env/client"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
+import { FaGoogle } from "react-icons/fa"
 
 export default function ContinueWithGoogleButton() {
   const [loading, setLoading] = useState(false)
@@ -32,14 +33,21 @@ export default function ContinueWithGoogleButton() {
     }
   }
 
+  // return (
+  //   <GoogleLogin
+  //     logo_alignment="left"
+  //     useOneTap={false}
+  //     text="continue_with"
+  //     theme="filled_black"
+  //     shape="circle"
+  //     onSuccess={handleGoogleLogin}
+  //   />
+  // )
+
   return (
-    <GoogleLogin
-      logo_alignment="left"
-      useOneTap={false}
-      text="continue_with"
-      theme="filled_black"
-      shape="circle"
-      onSuccess={handleGoogleLogin}
-    />
+    <button className="btn btn-neutral flex items-center gap-2">
+      <FaGoogle />
+      <span className="text-sm font-regular">Continue with Google</span>
+    </button>
   )
 }

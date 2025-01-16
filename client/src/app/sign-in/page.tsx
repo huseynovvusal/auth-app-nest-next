@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import env from "@/lib/env/client"
 import { useToast } from "@/hooks/use-toast"
 import { signIn } from "next-auth/react"
+import ContinueWithGoogleButton from "@/components/auth/ContinueWithGoogleButton"
+import Link from "next/link"
 
 const signinSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -67,10 +69,10 @@ export default function Page() {
     <div
       className={`container ${
         loading && "pointer-events-none opacity-75"
-      } flex flex-col items-center justify-center h-full gap-4`}
+      } flex flex-col items-center  justify-center h-full gap-4`}
     >
       <form
-        className="flex flex-col gap-2 max-w-[500px]"
+        className="flex flex-col gap-2 w-full max-w-[500px]"
         // onSubmit={handleSubmit(onSubmit)}
         onSubmit={handleSubmit((data: z.infer<typeof signinSchema>) =>
           signIn("credentials", {
@@ -110,6 +112,15 @@ export default function Page() {
         <button type="submit" className={`btn ${loading ? "btn-disabled" : "btn-primary"} text-white`}>
           Sign In
         </button>
+
+        <ContinueWithGoogleButton />
+
+        <span className="text-sm text-gray-500">
+          Don't you have an account?{" "}
+          <Link href="/register" className="underline text-blue-700">
+            Register
+          </Link>
+        </span>
       </form>
     </div>
   )
