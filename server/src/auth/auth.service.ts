@@ -43,7 +43,7 @@ export class AuthService {
   /*
    * Refresh Tokens
    */
-  public async refreshTokens(request: RequestUser, response: Response) {
-    return await this.refreshTokensProvider.refreshTokens(request, response);
+  public async refreshTokens(request: RequestUser) {
+    return await this.refreshTokensProvider.refreshTokens(request);
   }
 }

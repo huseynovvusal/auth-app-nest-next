@@ -90,6 +90,6 @@ export class AuthController {
     @Req() request: RequestUser,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return await this.authService.refreshTokens(request, response);
+    return await this.authService.refreshTokens(request);
   }
 }

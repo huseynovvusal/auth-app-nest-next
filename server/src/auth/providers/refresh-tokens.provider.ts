@@ -46,7 +46,6 @@ export class RefreshTokensProvider {
 
   public async refreshTokens(
     request: RequestUser,
-    response: Response,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       //? Extract Refresh Token Payload
@@ -77,11 +76,7 @@ export class RefreshTokensProvider {
       }
 
       //? Generate new tokens
-      return await this.generateTokensProvider.generateTokens(
-        user,
-        sessionId,
-        response,
-      );
+      return await this.generateTokensProvider.generateTokens(user, sessionId);
     } catch (error) {
       throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
     }

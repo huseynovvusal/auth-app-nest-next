@@ -47,6 +47,6 @@ export class UsersController {
    */
   @Get('info')
   public async getUserInfo(@Req() request: RequestUser): Promise<any> {
-    return request.user;
+    return { user: request.user };
   }
 }
