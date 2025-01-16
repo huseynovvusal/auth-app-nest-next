@@ -41,6 +41,10 @@ export const authOptions: NextAuthOptions = {
           return data
         }
 
+        if (data?.error) {
+          throw new Error(data.message)
+        }
+
         return null
       },
     }),

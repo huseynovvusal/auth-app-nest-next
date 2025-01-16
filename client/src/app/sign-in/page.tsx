@@ -4,7 +4,6 @@ import { useState } from "react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import env from "@/lib/env/client"
 import { useToast } from "@/hooks/use-toast"
 import { signIn } from "next-auth/react"
 import ContinueWithGoogleButton from "@/components/auth/ContinueWithGoogleButton"
@@ -27,41 +26,33 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
 
   const { toast } = useToast()
-
   const onSubmit = async (data: z.infer<typeof signinSchema>) => {
     setLoading(true)
 
     try {
-      const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl: "http://localhost:3000",
       })
 
-      if (response.ok) {
-        toast({
-          title: "Sign in successful",
-          description: "You have successfully signed in.",
-        })
-      } else {
-        const data = await response.json()
-
-        toast({
-          title: data?.error || "Sign in failed",
-          description: data?.message || "You have successfully signed in.",
-          variant: "destructive",
-        })
-
-        console.log()
+      if (result?.error) {
+        throw new Error(result.error)
       }
+
+      toast({
+        title: "Sign in successful",
+        description: "You have successfully signed in.",
+      })
     } catch (error) {
       toast({
         title: "Sign in failed",
-        description: "An error occurred while signing in.",
+        description: error instanceof Error ? error.message : "An error occurred while signing in.",
         variant: "destructive",
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -71,18 +62,7 @@ export default function Page() {
         loading && "pointer-events-none opacity-75"
       } flex flex-col items-center  justify-center h-full gap-4`}
     >
-      <form
-        className="flex flex-col gap-2 w-full max-w-[500px]"
-        // onSubmit={handleSubmit(onSubmit)}
-        onSubmit={handleSubmit((data: z.infer<typeof signinSchema>) =>
-          signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: true,
-            callbackUrl: "http://localhost:3000",
-          })
-        )}
-      >
+      <form className="flex flex-col gap-2 w-full max-w-[500px]" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl text-primary">Sign In</h1>
           <p className="text-gray-500 font-thin text-sm">Fill in the form below to sign in.</p>
