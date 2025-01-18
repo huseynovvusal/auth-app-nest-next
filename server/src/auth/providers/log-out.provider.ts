@@ -1,10 +1,7 @@
 import { Injectable, RequestTimeoutException, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
-import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { RequestUser } from '../types/requestUser.type';
 import { AccessTokenGuard } from '../guards/access-token/access-token.guard';
 import { SessionProvider } from './session.provider';
-import { REFRESH_TOKEN_PATH } from '../constants/auth.constants';
 
 /*
  * Log Out Provider
@@ -23,16 +20,17 @@ export class LogOutProvider {
    */
   @UseGuards(AccessTokenGuard)
   public async logOut(request: RequestUser): Promise<void> {
-    const user = request.user;
-
     try {
-      const session = await this.sessionProvider.delete(user.sessionId);
+      const session = await this.sessionProvider.delete(request.payload.sub);
     } catch (error) {
       throw new RequestTimeoutException(error);
     }
 
     // !
-    console.log('Log Out -> User:', user.email);
+    console.log(
+      `Log Out -> User (${request.user.firstName}):`,
+      request.user.email,
+    );
 
     // //? Clear Cookies
     // response

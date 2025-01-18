@@ -20,6 +20,7 @@ export class AuthenticationGuard implements CanActivate {
     CanActivate | CanActivate[]
   > = {
     [AuthType.Cookie]: this.accessTokenGuard,
+    [AuthType.Bearer]: this.accessTokenGuard,
     [AuthType.NoCookie]: this.nonAccessTokenGuard,
     [AuthType.None]: { canActivate: () => true },
   };

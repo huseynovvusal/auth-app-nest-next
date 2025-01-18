@@ -13,6 +13,7 @@ import jwtConfig from 'src/auth/config/jwt.config';
 import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
 import { AccessToken } from 'src/auth/interfaces/accessToken.interface';
 import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -26,6 +27,10 @@ export class AccessTokenGuard implements CanActivate {
      */
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    /*
+     * Inject Users Service
+     */
+    private readonly usersService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -47,7 +52,14 @@ export class AccessTokenGuard implements CanActivate {
         this.jwtConfiguration,
       );
 
-      request[REQUEST_USER_KEY] = payload;
+      //? Find User
+      const user = await this.usersService.findOneById(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+
+      request[REQUEST_USER_KEY] = user;
 
       //!
       console.log('Access Token Guard -> User:', payload.email);

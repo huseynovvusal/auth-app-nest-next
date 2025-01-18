@@ -87,4 +87,13 @@ export class AuthController {
   public async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     return await this.authService.refreshTokens(refreshTokenDto);
   }
+
+  /*
+   * Get User Sessions
+   */
+  @Get('sessions')
+  @Auth(AuthType.Bearer)
+  public async getUserSessions(@Req() request: RequestUser) {
+    return await this.authService.getUserSessions(request);
+  }
 }

@@ -79,11 +79,9 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (new Date() < new Date(token.expiresAt)) {
-        console.log("Token is valid")
         return token
       }
 
-      console.log("Token is expired", token.expiresAt)
       return await refreshToken(token)
     },
 

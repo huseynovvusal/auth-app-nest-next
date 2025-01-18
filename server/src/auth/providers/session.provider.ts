@@ -1,12 +1,10 @@
 import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
-import { Repository, UpdateResult } from 'typeorm';
+import { MoreThan, Repository, UpdateResult } from 'typeorm';
 import { Session } from '../entities/session.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { ISessionPayload } from '../interfaces/session.interface';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
-import { merge } from 'rxjs';
 
 @Injectable()
 export class SessionProvider {
@@ -22,6 +20,20 @@ export class SessionProvider {
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
+
+  public async findAllByUserId(userId: number): Promise<Session[]> {
+    let sessions: Session[] = undefined;
+
+    try {
+      sessions = await this.sessionRepository.find({
+        where: { user: { id: userId }, expiresAt: MoreThan(new Date()) },
+      });
+    } catch (error) {
+      throw new RequestTimeoutException(error);
+    }
+
+    return sessions;
+  }
 
   public async findOneById(sessionId: number): Promise<Session> {
     let session: Session = undefined;

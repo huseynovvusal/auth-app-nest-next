@@ -6,6 +6,7 @@ import { LogOutProvider } from './providers/log-out.provider';
 import { RequestUser } from './types/requestUser.type';
 import { RefreshTokensProvider } from './providers/refresh-tokens.provider';
 import RefreshTokenDto from './dtos/refresh-token.dto';
+import { SessionProvider } from './providers/session.provider';
 
 /*
  * Auth Service
@@ -25,6 +26,10 @@ export class AuthService {
      * Inject RefreshTokensProvider
      */
     private readonly refreshTokensProvider: RefreshTokensProvider,
+    /*
+     * Inject Session Provider
+     */
+    private readonly sessionProvider: SessionProvider,
   ) {}
 
   /*
@@ -46,5 +51,12 @@ export class AuthService {
    */
   public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     return await this.refreshTokensProvider.refreshTokens(refreshTokenDto);
+  }
+
+  /*
+   * Get User Sessions
+   */
+  public async getUserSessions(request: RequestUser) {
+    return await this.sessionProvider.findAllByUserId(request.user.id);
   }
 }
