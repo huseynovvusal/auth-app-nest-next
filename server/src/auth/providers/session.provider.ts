@@ -21,7 +21,9 @@ export class SessionProvider {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
-  public async findAllByUserId(userId: number): Promise<Session[]> {
+  public async findAllByUserId(
+    userId: number,
+  ): Promise<{ sessions: Session[] }> {
     let sessions: Session[] = undefined;
 
     try {
@@ -32,7 +34,7 @@ export class SessionProvider {
       throw new RequestTimeoutException(error);
     }
 
-    return sessions;
+    return { sessions };
   }
 
   public async findOneById(sessionId: number): Promise<Session> {
