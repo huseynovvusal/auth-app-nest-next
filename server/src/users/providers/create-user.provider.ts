@@ -79,14 +79,14 @@ export class CreateUserProvider {
     try {
       newUser = await this.userRepository.save(newUser);
 
-      //? Create a new session
-      const session = await this.sessionProvider.create({
-        userAgent,
-        ip,
-        user: newUser,
-      });
+      //! Create a new session
+      // const session = await this.sessionProvider.create({
+      //   userAgent,
+      //   ip,
+      //   user: newUser,
+      // });
 
-      //? Sign Access Token & Refresh Token (Set Cookies)
+      //! Sign Access Token & Refresh Token (Set Cookies)
       // const { accessToken, refreshToken } =
       // const {accessToken, refreshToken} = await this.generateTokensProvider.generateTokens(
       //   newUser,
