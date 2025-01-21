@@ -15,7 +15,7 @@ export default function Page() {
         as the frontend framework.
       </p>
 
-      <span className="w-full">{JSON.stringify(session?.user, null, 2)}</span>
+      <span className="w-full">{JSON.stringify(session, null, 2)}</span>
 
       <ContinueWithGoogleButton />
     </div>

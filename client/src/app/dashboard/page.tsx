@@ -9,8 +9,9 @@ export default function Page() {
   const { data: session } = useSession()
 
   const { data, isLoading, isError, error } = useQuery({
-    queryFn: () => getUserSessions(session?.access_token),
+    queryFn: () => getUserSessions(session?.access_token as string),
     queryKey: ["user_sessions"],
+    enabled: !!session?.access_token,
   })
 
   if (isLoading) {
