@@ -39,3 +39,19 @@ export const getUserSessions = async () => {
     }
   }
 }
+
+export const logOut = async (): Promise<void> => {
+  try {
+    await apiClient.get(`/auth/log-out`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message)
+    } else {
+      throw new Error(String(error))
+    }
+  }
+}

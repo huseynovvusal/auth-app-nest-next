@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   description:
     "This project is an authentication application that includes features such as login/signup, forgot password, email verification, session management, and Google OAuth authentication. It uses Nest.js as the backend framework and Next.js as the frontend framework.",
 }
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,11 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${poppins.variable} h-full antialiased`}>
         <Providers>
           <Navbar />
 
-          <main className="container mx-auto h-full">{children}</main>
+          <main className="container">{children}</main>
           <Toaster />
         </Providers>
       </body>

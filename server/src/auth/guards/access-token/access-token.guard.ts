@@ -10,7 +10,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import jwtConfig from 'src/auth/config/jwt.config';
-import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
+import {
+  REQUEST_ACCESS_PAYLOAD_KEY,
+  REQUEST_USER_KEY,
+} from 'src/auth/constants/auth.constants';
 import { AccessToken } from 'src/auth/interfaces/accessToken.interface';
 import * as COOKIE_KEYS from 'src/common/constants/cookie.constants';
 import { UsersService } from 'src/users/users.service';
@@ -60,6 +63,7 @@ export class AccessTokenGuard implements CanActivate {
       }
 
       request[REQUEST_USER_KEY] = user;
+      request[REQUEST_ACCESS_PAYLOAD_KEY] = payload;
 
       //!
       console.log('Access Token Guard -> User:', payload.email);

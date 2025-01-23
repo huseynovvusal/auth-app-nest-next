@@ -3,8 +3,8 @@
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useState } from "react"
-import env from "@/lib/env/client"
 import { toast } from "@/hooks/use-toast"
+import { logOut } from "@/services/auth"
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -15,7 +15,7 @@ export default function Navbar() {
     setIsLoggingOut(true)
 
     try {
-      await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/log-out`)
+      await logOut()
       await signOut({ redirect: true })
     } catch (error) {
       toast({

@@ -21,8 +21,9 @@ export class LogOutProvider {
   @UseGuards(AccessTokenGuard)
   public async logOut(request: RequestUser): Promise<void> {
     try {
-      const session = await this.sessionProvider.delete(request.payload.sub);
+      await this.sessionProvider.delete(request.accessPayload.sessionId);
     } catch (error) {
+      console.log(error);
       throw new RequestTimeoutException(error);
     }
 
