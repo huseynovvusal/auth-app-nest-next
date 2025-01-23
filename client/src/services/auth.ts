@@ -1,9 +1,9 @@
-import { AxiosInstance } from "@/lib/axios"
+import { apiClient } from "@/lib/axios"
 import { RegisterInput } from "@/schemas/registerSchema"
 
 export const register = async (body: RegisterInput) => {
   try {
-    const response = await AxiosInstance.post(`/auth/register`, JSON.stringify(body), {
+    const response = await apiClient.post(`/auth/register`, JSON.stringify(body), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -19,14 +19,16 @@ export const register = async (body: RegisterInput) => {
   }
 }
 
-export const getUserSessions = async (token: string) => {
+export const getUserSessions = async () => {
   try {
-    const response = await AxiosInstance.get(`/auth/sessions`, {
+    const response = await apiClient.get(`/auth/sessions`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     })
+
+    // !
+    console.log("response", response.data)
 
     return response.data
   } catch (error) {

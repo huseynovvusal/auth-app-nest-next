@@ -36,17 +36,20 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
 
         const { email, password } = credentials
 
+        const userAgent = req?.headers?.["user-agent"] || "Unknown"
+
         const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/sign-in`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "User-Agent": userAgent,
           },
           body: JSON.stringify({
             email,
